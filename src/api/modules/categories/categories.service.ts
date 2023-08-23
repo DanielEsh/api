@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 // import { CrudService } from 'src/shared/crud/crud.service';
@@ -39,13 +43,19 @@ export class CategoriesService {
   private readonly queryBuilder = null;
 
   async createCategory(createCategoryDto: CreateCategoryDto) {
-    const categoryToCreate = new Category();
+    try {
+      const categoryToCreate = new Category();
 
-    categoryToCreate.slug = createCategoryDto.slug;
-    categoryToCreate.name = createCategoryDto.name;
-    categoryToCreate.description = createCategoryDto?.description || '';
+      categoryToCreate.slug = createCategoryDto.slug;
+      categoryToCreate.name = createCategoryDto.name;
+      categoryToCreate.description = createCategoryDto?.description || '';
 
-    return await this.repository.save(categoryToCreate);
+      return await this.repository.save(categoryToCreate);
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException('Slug already exist');
+      }
+    }
   }
 
   async findAll(options: FindAllOptions) {

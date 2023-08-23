@@ -10,6 +10,8 @@ import {
   DefaultValuePipe,
   Query,
   ParseIntPipe,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -32,7 +34,11 @@ export class CategoriesController {
   @ApiBody({ type: CreateCategoryDto })
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.createCategory(createCategoryDto);
+    try {
+      return this.categoriesService.createCategory(createCategoryDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.CONFLICT);
+    }
   }
 
   @Get()
