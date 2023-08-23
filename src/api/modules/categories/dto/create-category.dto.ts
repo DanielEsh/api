@@ -1,5 +1,11 @@
+import { IsNotEmpty } from 'class-validator';
+
 export class CreateCategoryDto {
-  name: string;
+  @IsNotEmpty()
   slug: string;
+
+  @IsNotEmpty()
+  name: string;
+
   description?: string;
 }

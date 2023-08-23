@@ -12,6 +12,8 @@ import {
   ParseIntPipe,
   HttpException,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -33,6 +35,7 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Create category' })
   @ApiBody({ type: CreateCategoryDto })
   @Post()
+  @UsePipes(new ValidationPipe())
   create(@Body() createCategoryDto: CreateCategoryDto) {
     try {
       return this.categoriesService.createCategory(createCategoryDto);
