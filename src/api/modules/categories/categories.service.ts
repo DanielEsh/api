@@ -9,6 +9,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CrudService } from 'src/shared/crud/crud.service';
 
 interface PaginationLinks {
   previous: number | null;
@@ -37,23 +38,23 @@ interface FindAllOptions {
 
 @Injectable()
 export class CategoriesService {
-  @InjectRepository(Category)
-  private readonly repository: Repository<Category>;
+  protected readonly crudService;
+
+  constructor(
+    @InjectRepository(Category)
+    private readonly repository: Repository<Category>,
+  ) {
+    this.crudService = new CrudService<Category>(repository);
+  }
 
   async createCategory(createCategoryDto: CreateCategoryDto) {
-    try {
-      const categoryToCreate = new Category();
+    const categoryToCreate = new Category();
 
-      categoryToCreate.slug = createCategoryDto.slug;
-      categoryToCreate.name = createCategoryDto.name;
-      categoryToCreate.description = createCategoryDto?.description || '';
+    categoryToCreate.slug = createCategoryDto.slug;
+    categoryToCreate.name = createCategoryDto.name;
+    categoryToCreate.description = createCategoryDto?.description || '';
 
-      return await this.repository.save(categoryToCreate);
-    } catch (error) {
-      if (error.code === '23505') {
-        throw new ConflictException('Slug already exist');
-      }
-    }
+    return await this.crudService.create(categoryToCreate);
   }
 
   async findAll(options: FindAllOptions) {

@@ -20,6 +20,7 @@ async function bootstrap() {
 
   await app.listen(port, () => {
     console.log('[WEB]', `http://localhost:${port}`);
+    console.log('[DOCS]', `http://localhost:${port}/api/docs`);
   });
 }
 bootstrap();

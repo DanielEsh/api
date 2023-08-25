@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 interface Param<T> {
@@ -8,10 +9,19 @@ interface Param<T> {
 
 @Injectable()
 export class CrudService<T> {
-  constructor(private readonly repository: Repository<T>) {}
+  constructor(
+    @InjectRepository(Object) private readonly repository: Repository<T>,
+  ) {}
 
   async create(entity: T): Promise<T> {
-    return await this.repository.save(entity);
+    try {
+      return await this.repository.save(entity);
+    } catch (error) {
+      if (error.code === '23505')
+        throw new ConflictException('Entity already exist');
+
+      throw error;
+    }
   }
 
   async readAll(): Promise<T[]> {
