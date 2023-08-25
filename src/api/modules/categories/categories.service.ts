@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 // import { CrudService } from 'src/shared/crud/crud.service';
@@ -65,12 +65,9 @@ export class CategoriesService {
   }
 
   async remove(id: number) {
-    const deletedEntity = await this.findOneById(id);
-    if (!deletedEntity) {
-      throw new NotFoundException();
-    }
-
-    await this.repository.remove(deletedEntity);
-    return deletedEntity;
+    return await this.crudService.delete({
+      name: 'id',
+      value: id,
+    });
   }
 }

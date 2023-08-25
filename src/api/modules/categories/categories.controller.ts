@@ -117,6 +117,8 @@ export class CategoriesController {
     return this.categoriesService.update(slug, updateCategoryDto);
   }
 
+  @ApiOperation({ summary: 'Delete category by id' })
+  @ApiOkResponse({ type: Category })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id);

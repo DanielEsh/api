@@ -111,7 +111,14 @@ export class CrudService<T> {
     return await this.repository.save(entityToUpdate);
   }
 
-  async delete(id: number): Promise<void> {
-    await this.repository.delete(id);
+  async delete(findEntityParam: Param<T>): Promise<T> {
+    const deletedEntity = await this.readOne(findEntityParam);
+
+    if (!deletedEntity) {
+      throw new NotFoundException();
+    }
+
+    await this.repository.remove(deletedEntity);
+    return deletedEntity;
   }
 }
