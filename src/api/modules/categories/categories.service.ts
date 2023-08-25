@@ -12,7 +12,6 @@ interface FindAllOptions {
   order: ['asc' | 'desc'];
   limit: number;
   page: number;
-  route: string;
 }
 
 @Injectable()
@@ -23,7 +22,7 @@ export class CategoriesService {
     @InjectRepository(Category)
     private readonly repository: Repository<Category>,
   ) {
-    this.crudService = new CrudService<Category>(repository);
+    this.crudService = new CrudService<Category>(repository, 'categories');
   }
 
   async createCategory(createCategoryDto: CreateCategoryDto) {

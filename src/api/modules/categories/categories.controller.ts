@@ -83,7 +83,6 @@ export class CategoriesController {
       order,
       page,
       limit,
-      route: ' ',
     });
   }
 

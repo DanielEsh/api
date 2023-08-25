@@ -16,6 +16,7 @@ interface Param<T> {
 export class CrudService<T> {
   constructor(
     @InjectRepository(Object) private readonly repository: Repository<T>,
+    private readonly entityName: string,
   ) {}
 
   async create(entity: T): Promise<T> {
@@ -33,11 +34,31 @@ export class CrudService<T> {
     return this.repository.find();
   }
 
-  async findPaginationAll(page: number = 1, limit = 10) {
-    const [data, totalCount] = await this.repository.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+  async findPaginationAll(
+    page: number = 1,
+    limit = 10,
+    sortBy?: string[],
+    orderBy?: ('asc' | 'desc')[],
+  ) {
+    const queryBuilder = this.repository.createQueryBuilder(this.entityName);
+
+    const offset = (page - 1) * limit;
+
+    if (sortBy?.length && orderBy?.length) {
+      const order = orderBy.map((item) => item.toUpperCase()) as (
+        | 'ASC'
+        | 'DESC'
+      )[];
+
+      sortBy.map((field, index) =>
+        queryBuilder.orderBy(`${this.entityName}.${field}`, order[index]),
+      );
+    }
+
+    const [data, totalCount] = await queryBuilder
+      .offset(offset)
+      .limit(limit)
+      .getManyAndCount();
 
     const totalPages = Math.ceil(totalCount / limit);
 
