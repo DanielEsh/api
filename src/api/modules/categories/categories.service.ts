@@ -1,32 +1,11 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 // import { CrudService } from 'src/shared/crud/crud.service';
 import { Category } from './entities/category.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CrudService } from 'src/shared/crud/crud.service';
-
-interface PaginationLinks {
-  previous: number | null;
-  next: number | null;
-}
-interface Pagination {
-  itemCountOnPage: number;
-  itemsPerPage: number;
-  totalPages: number;
-  currentPage: number;
-  links: PaginationLinks;
-}
-
-export interface Meta {
-  totalItemsCount: number;
-  pagination: Pagination;
-}
 
 interface FindAllOptions {
   sort: [string];
@@ -58,71 +37,10 @@ export class CategoriesService {
   }
 
   async findAll(options: FindAllOptions) {
-    const builder = await this.repository.createQueryBuilder('category');
-
-    return this.paginate(builder, options);
-  }
-
-  private async paginate(
-    builder: SelectQueryBuilder<Category>,
-    options: FindAllOptions,
-  ) {
-    const { limit = 10, page = 1 } = options;
-
-    console.log('options', options);
-
-    builder.limit(limit);
-    builder.offset((page - 1) * limit);
-
-    const totalItemsCount = await builder.getCount();
-    const getBuilder = await builder
-      .select('category.id')
-      .addSelect('category.slug')
-      .addSelect('category.name');
-
-    if (options.sort) {
-      options.sort.map((field, index) =>
-        getBuilder.orderBy(
-          `category.${field}`,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          options.order.length ? options.order[index]?.toUpperCase() : 'ASC',
-        ),
-      );
-    }
-
-    const items = await getBuilder.getMany();
-
-    const totalPages =
-      totalItemsCount !== undefined
-        ? Math.ceil(totalItemsCount / limit)
-        : undefined;
-    const hasNextPage = page < totalPages;
-    const hasPreviousPage = page > 1;
-
-    const routes = {
-      previous: hasPreviousPage ? page - 1 : null,
-      next: hasNextPage ? page + 1 : null,
-    };
-
-    const meta: Meta = {
-      totalItemsCount,
-      pagination: {
-        itemCountOnPage: items.length,
-        itemsPerPage: limit,
-        totalPages,
-        currentPage: page,
-        links: {
-          previous: routes.previous,
-          next: routes.next,
-        },
-      },
-    };
-
-    return {
-      data: items,
-      meta,
-    };
+    return await this.crudService.findPaginationAll(
+      options.page,
+      options.limit,
+    );
   }
 
   findOneBySlug(slug: string) {
