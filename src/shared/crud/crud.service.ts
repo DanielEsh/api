@@ -5,32 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PagiableResponse } from './paginations.types';
 
 interface Param<T> {
   name: keyof T;
   value: any;
-}
-
-interface PaginationLinks {
-  previous: number | null;
-  next: number | null;
-}
-interface Pagination {
-  itemsCountOnPage: number;
-  itemsPerPage: number;
-  totalPages: number;
-  page: number;
-  links: PaginationLinks;
-}
-
-export interface Meta {
-  totalItemsCount: number;
-  pagination: Pagination;
-}
-
-interface PagiableResponse<ENTITY> {
-  content: ENTITY[];
-  meta: Meta;
 }
 
 @Injectable()
@@ -83,6 +62,19 @@ export class CrudService<T> {
   }
 
   async readOne(param: Param<T>): Promise<T> {
+    return await this.findByParam(param);
+  }
+
+  async readOneById(id: number) {
+    return await this.findByParam({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      name: 'id',
+      value: id,
+    });
+  }
+
+  async findByParam(param: Param<T>): Promise<T> {
     const entity = await this.repository.findOne({
       where: {
         [param.name]: param.value,
@@ -90,7 +82,7 @@ export class CrudService<T> {
     });
 
     if (!entity) {
-      throw new NotFoundException();
+      throw new NotFoundException('Entity not found');
     }
 
     return entity;
@@ -102,10 +94,6 @@ export class CrudService<T> {
   ): Promise<T> {
     const entityToUpdate = await this.readOne(findEntityParam);
 
-    if (!entityToUpdate) {
-      throw new NotFoundException('Entity not found');
-    }
-
     Object.assign(entityToUpdate, updatedData);
 
     return await this.repository.save(entityToUpdate);
@@ -113,10 +101,6 @@ export class CrudService<T> {
 
   async delete(findEntityParam: Param<T>): Promise<T> {
     const deletedEntity = await this.readOne(findEntityParam);
-
-    if (!deletedEntity) {
-      throw new NotFoundException();
-    }
 
     await this.repository.remove(deletedEntity);
     return deletedEntity;
