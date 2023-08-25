@@ -96,8 +96,19 @@ export class CrudService<T> {
     return entity;
   }
 
-  async updateById(id: number, entity: any) {
-    await this.repository.update(id, entity);
+  async updateById(
+    findEntityParam: Param<T>,
+    updatedData: Partial<T>,
+  ): Promise<T> {
+    const entityToUpdate = await this.readOne(findEntityParam);
+
+    if (!entityToUpdate) {
+      throw new NotFoundException('Entity not found');
+    }
+
+    Object.assign(entityToUpdate, updatedData);
+
+    return await this.repository.save(entityToUpdate);
   }
 
   async delete(id: number): Promise<void> {

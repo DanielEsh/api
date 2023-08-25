@@ -87,7 +87,7 @@ export class CategoriesController {
     });
   }
 
-  @ApiOperation({ summary: 'Read categories by slug param' })
+  @ApiOperation({ summary: 'Read category by slug param' })
   @ApiParam({
     name: 'slug',
     type: String,
@@ -100,6 +100,15 @@ export class CategoriesController {
     return this.categoriesService.findOneBySlug(slug);
   }
 
+  @ApiOperation({ summary: 'Update category by slug param' })
+  @ApiParam({
+    name: 'slug',
+    type: String,
+    example: 'example-slug',
+    required: true,
+  })
+  @ApiBody({ type: UpdateCategoryDto })
+  @ApiOkResponse({ type: Category })
   @Patch(':slug')
   update(
     @Param('slug') slug: string,

@@ -50,18 +50,18 @@ export class CategoriesService {
     });
   }
 
-  findOneById(id: number) {
-    return this.repository.findOne({ where: { id } });
+  async findOneById(id: number) {
+    return await this.crudService.readOne({
+      name: 'id',
+      value: id,
+    });
   }
 
   async update(slug: string, updateCategoryDto: UpdateCategoryDto) {
-    const category = await this.findOneBySlug(slug);
-
-    category.name = updateCategoryDto?.name ?? category.name;
-    category.description =
-      updateCategoryDto?.description ?? category.description;
-
-    return this.repository.save(category);
+    return await this.crudService.updateById(
+      { name: 'slug', value: slug },
+      updateCategoryDto,
+    );
   }
 
   async remove(id: number) {
