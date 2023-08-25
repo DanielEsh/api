@@ -16,7 +16,7 @@ export interface Meta {
   pagination: Pagination;
 }
 
-export interface PagiableResponse<ENTITY> {
+export interface PageableResponse<ENTITY> {
   content: ENTITY[];
   meta: Meta;
 }

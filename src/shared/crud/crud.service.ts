@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PagiableResponse } from './paginations.types';
+import { PageableResponse } from './paginations.types';
 
 interface Param<T> {
   name: keyof T;
@@ -41,7 +41,7 @@ export class CrudService<T> {
 
     const totalPages = Math.ceil(totalCount / limit);
 
-    const pagination: PagiableResponse<T> = {
+    const pagination: PageableResponse<T> = {
       content: data,
       meta: {
         totalItemsCount: totalCount,
