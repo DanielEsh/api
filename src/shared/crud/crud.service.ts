@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -79,11 +83,17 @@ export class CrudService<T> {
   }
 
   async readOne(param: Param<T>): Promise<T> {
-    return this.repository.findOne({
+    const entity = await this.repository.findOne({
       where: {
         [param.name]: param.value,
       } as any,
     });
+
+    if (!entity) {
+      throw new NotFoundException();
+    }
+
+    return entity;
   }
 
   async updateById(id: number, entity: any) {

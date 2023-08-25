@@ -21,7 +21,9 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import {
   ApiBody,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -85,6 +87,14 @@ export class CategoriesController {
     });
   }
 
+  @ApiOperation({ summary: 'Read categories by slug param' })
+  @ApiParam({
+    name: 'slug',
+    type: String,
+    example: 'example-slug',
+    required: true,
+  })
+  @ApiOkResponse({ type: Category })
   @Get(':slug')
   findOne(@Param('slug') slug: string) {
     return this.categoriesService.findOneBySlug(slug);

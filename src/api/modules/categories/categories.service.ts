@@ -43,8 +43,11 @@ export class CategoriesService {
     );
   }
 
-  findOneBySlug(slug: string) {
-    return this.repository.findOne({ where: { slug } });
+  async findOneBySlug(slug: string) {
+    return await this.crudService.readOne({
+      name: 'slug',
+      value: slug,
+    });
   }
 
   findOneById(id: number) {
