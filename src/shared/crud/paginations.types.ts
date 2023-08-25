@@ -20,3 +20,10 @@ export interface PageableResponse<ENTITY> {
   content: ENTITY[];
   meta: Meta;
 }
+
+export interface PaginationsParams {
+  sort: [string];
+  order: ['asc' | 'desc'];
+  limit: number;
+  page: number;
+}

@@ -1,18 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-// import { CrudService } from 'src/shared/crud/crud.service';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CrudService } from 'src/shared/crud/crud.service';
-
-interface FindAllOptions {
-  sort: [string];
-  order: ['asc' | 'desc'];
-  limit: number;
-  page: number;
-}
+import { CrudService, PaginationsParams } from 'src/shared/crud';
 
 @Injectable()
 export class CategoriesService {
@@ -22,7 +14,7 @@ export class CategoriesService {
     @InjectRepository(Category)
     private readonly repository: Repository<Category>,
   ) {
-    this.crudService = new CrudService<Category>(repository, 'categories');
+    this.crudService = new CrudService<Category>(this.repository, 'categories');
   }
 
   async createCategory(createCategoryDto: CreateCategoryDto) {
@@ -35,7 +27,7 @@ export class CategoriesService {
     return await this.crudService.create(categoryToCreate);
   }
 
-  async findAll(options: FindAllOptions) {
+  async findAll(options: PaginationsParams) {
     return await this.crudService.findPaginationAll(
       options.page,
       options.limit,
