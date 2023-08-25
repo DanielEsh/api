@@ -18,7 +18,13 @@ import {
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Category } from './entities/category.entity';
 
 const DEFAULT_VALUES = {
   limit: 10,
@@ -34,6 +40,7 @@ export class CategoriesController {
 
   @ApiOperation({ summary: 'Create category' })
   @ApiBody({ type: CreateCategoryDto })
+  @ApiCreatedResponse({ type: Category })
   @Post()
   @UsePipes(new ValidationPipe())
   create(@Body() createCategoryDto: CreateCategoryDto) {

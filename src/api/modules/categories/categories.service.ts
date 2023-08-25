@@ -7,7 +7,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 // import { CrudService } from 'src/shared/crud/crud.service';
 import { Category } from './entities/category.entity';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 interface PaginationLinks {
@@ -40,8 +40,6 @@ export class CategoriesService {
   @InjectRepository(Category)
   private readonly repository: Repository<Category>;
 
-  private readonly queryBuilder = null;
-
   async createCategory(createCategoryDto: CreateCategoryDto) {
     try {
       const categoryToCreate = new Category();
@@ -64,7 +62,10 @@ export class CategoriesService {
     return this.paginate(builder, options);
   }
 
-  private async paginate(builder, options: FindAllOptions) {
+  private async paginate(
+    builder: SelectQueryBuilder<Category>,
+    options: FindAllOptions,
+  ) {
     const { limit = 10, page = 1 } = options;
 
     console.log('options', options);
@@ -82,6 +83,8 @@ export class CategoriesService {
       options.sort.map((field, index) =>
         getBuilder.orderBy(
           `category.${field}`,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           options.order.length ? options.order[index]?.toUpperCase() : 'ASC',
         ),
       );
