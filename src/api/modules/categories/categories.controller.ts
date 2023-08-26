@@ -70,17 +70,17 @@ export class CategoriesController {
       new DefaultValuePipe(DEFAULT_VALUES.sort_by),
       ParseArrayPipe,
     )
-    sort,
+    sortBy,
     @Query(
       'order_by',
       new DefaultValuePipe(DEFAULT_VALUES.order_by),
       ParseArrayPipe,
     )
-    order,
+    orderBy,
   ) {
     return this.categoriesService.findAll({
-      sort,
-      order,
+      sortBy,
+      orderBy,
       page,
       limit,
     });
