@@ -11,11 +11,6 @@ export class CreateBrandDto {
   @IsNotEmpty()
   slug: string;
 
-  @ApiProperty({
-    example: AttributeType.String,
-    description: 'Type of the attribute',
-    required: true,
-  })
   @IsEnum(AttributeType)
   @IsNotEmpty()
   public type: AttributeType;
