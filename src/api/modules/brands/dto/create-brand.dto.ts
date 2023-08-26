@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
+import { AttributeType } from '../../attributes/attributes.types';
 
 export class CreateBrandDto {
   @ApiProperty({
@@ -9,6 +10,15 @@ export class CreateBrandDto {
   })
   @IsNotEmpty()
   slug: string;
+
+  @ApiProperty({
+    example: AttributeType.String,
+    description: 'Type of the attribute',
+    required: true,
+  })
+  @IsEnum(AttributeType)
+  @IsNotEmpty()
+  public type: AttributeType;
 
   @ApiProperty({
     example: 'example name',
