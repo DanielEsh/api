@@ -1,26 +1,65 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { Brand } from './entities/brand.entity';
+import { Repository } from 'typeorm';
+import {
+  CrudService,
+  type PaginationsParams,
+  type ICrudService,
+} from 'src/shared/crud';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class BrandsService {
-  create(createBrandDto: CreateBrandDto) {
-    return 'This action adds a new brand';
+  protected readonly crudService: ICrudService<Brand>;
+
+  constructor(
+    @InjectRepository(Brand)
+    private readonly brandRepository: Repository<Brand>,
+  ) {
+    this.crudService = new CrudService<Brand>(this.brandRepository, 'brands');
   }
 
-  findAll() {
-    return `This action returns all brands`;
+  async create(createBrandDto: CreateBrandDto) {
+    const brandToCreate = new Brand();
+
+    brandToCreate.slug = createBrandDto.slug;
+    brandToCreate.name = createBrandDto.name;
+    brandToCreate.description = createBrandDto?.description || '';
+
+    return await this.crudService.create(brandToCreate);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
+  async findAll(options: PaginationsParams) {
+    return await this.crudService.readAll(options);
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async findOneBySlug(slug: string) {
+    return await this.crudService.readOne({
+      name: 'slug',
+      value: slug,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  async findOneById(id: number) {
+    return await this.crudService.readOne({
+      name: 'id',
+      value: id,
+    });
+  }
+
+  async update(slug: string, updateBrandDto: UpdateBrandDto) {
+    return await this.crudService.update(
+      { name: 'slug', value: slug },
+      updateBrandDto,
+    );
+  }
+
+  async remove(id: number) {
+    return await this.crudService.delete({
+      name: 'id',
+      value: id,
+    });
   }
 }
