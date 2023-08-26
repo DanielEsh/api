@@ -22,8 +22,10 @@ export interface PageableResponse<ENTITY> {
 }
 
 export interface PaginationsParams {
-  sort: [string];
-  order: ['asc' | 'desc'];
+  sortBy: string[];
+  orderBy: ['asc' | 'desc'];
   limit: number;
   page: number;
 }
+
+export type OrderType = ('ASC' | 'DESC')[];

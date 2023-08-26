@@ -4,11 +4,15 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CrudService, PaginationsParams } from 'src/shared/crud';
+import {
+  CrudService,
+  type PaginationsParams,
+  type ICrudService,
+} from 'src/shared/crud';
 
 @Injectable()
 export class CategoriesService {
-  protected readonly crudService;
+  protected readonly crudService: ICrudService<Category>;
 
   constructor(
     @InjectRepository(Category)
@@ -28,10 +32,7 @@ export class CategoriesService {
   }
 
   async findAll(options: PaginationsParams) {
-    return await this.crudService.findPaginationAll(
-      options.page,
-      options.limit,
-    );
+    return await this.crudService.readAll(options);
   }
 
   async findOneBySlug(slug: string) {
@@ -49,7 +50,7 @@ export class CategoriesService {
   }
 
   async update(slug: string, updateCategoryDto: UpdateCategoryDto) {
-    return await this.crudService.updateById(
+    return await this.crudService.update(
       { name: 'slug', value: slug },
       updateCategoryDto,
     );

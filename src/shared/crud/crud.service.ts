@@ -5,15 +5,29 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PageableResponse } from './paginations.types';
+import {
+  OrderType,
+  PageableResponse,
+  PaginationsParams,
+} from './paginations.types';
 
 interface Param<T> {
   name: keyof T;
   value: any;
 }
 
+export interface ICrudService<T> {
+  create(entity: T): Promise<T>;
+  readAll(options: PaginationsParams): Promise<PageableResponse<T>>;
+  readOne(param: Param<T>): Promise<T>;
+  readOneById(id: number): Promise<T>;
+  findByParam(param: Param<T>): Promise<T>;
+  update(findEntityParam: Param<T>, updatedData: Partial<T>): Promise<T>;
+  delete(findEntityParam: Param<T>): Promise<T>;
+}
+
 @Injectable()
-export class CrudService<T> {
+export class CrudService<T> implements ICrudService<T> {
   constructor(
     @InjectRepository(Object) private readonly repository: Repository<T>,
     private readonly entityName: string,
@@ -30,25 +44,15 @@ export class CrudService<T> {
     }
   }
 
-  async readAll(): Promise<T[]> {
-    return this.repository.find();
-  }
+  async readAll(options: PaginationsParams): Promise<PageableResponse<T>> {
+    const { page, limit, sortBy, orderBy } = options;
 
-  async findPaginationAll(
-    page: number = 1,
-    limit = 10,
-    sortBy?: string[],
-    orderBy?: ('asc' | 'desc')[],
-  ) {
     const queryBuilder = this.repository.createQueryBuilder(this.entityName);
 
     const offset = (page - 1) * limit;
 
     if (sortBy?.length && orderBy?.length) {
-      const order = orderBy.map((item) => item.toUpperCase()) as (
-        | 'ASC'
-        | 'DESC'
-      )[];
+      const order = orderBy.map((item) => item.toUpperCase()) as OrderType;
 
       sortBy.map((field, index) =>
         queryBuilder.orderBy(`${this.entityName}.${field}`, order[index]),
@@ -109,10 +113,7 @@ export class CrudService<T> {
     return entity;
   }
 
-  async updateById(
-    findEntityParam: Param<T>,
-    updatedData: Partial<T>,
-  ): Promise<T> {
+  async update(findEntityParam: Param<T>, updatedData: Partial<T>): Promise<T> {
     const entityToUpdate = await this.readOne(findEntityParam);
 
     Object.assign(entityToUpdate, updatedData);
