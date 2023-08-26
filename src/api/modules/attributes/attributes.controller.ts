@@ -25,6 +25,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiQuery,
+  ApiTags,
 } from '@nestjs/swagger';
 import { Attribute } from './entities/attribute.entity';
 import { Brand } from '../brands/entities/brand.entity';
@@ -36,6 +37,7 @@ const DEFAULT_VALUES = {
   order_by: [],
 };
 
+@ApiTags('attributes')
 @Controller('attributes')
 export class AttributesController {
   constructor(private readonly attributesService: AttributesService) {}

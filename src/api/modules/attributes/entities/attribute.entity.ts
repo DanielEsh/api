@@ -29,8 +29,8 @@ export class Attribute {
     description: 'Value for the attribute',
     required: false,
   })
-  @Column({ type: 'jsonb', nullable: true })
-  public value?: any;
+  @Column({ type: 'varchar', default: '' })
+  public value?: string;
 
   @ApiProperty({
     example: '',
@@ -44,7 +44,7 @@ export class Attribute {
     enum: AttributeType,
     description: 'attribute description',
   })
-  @Column({ type: 'jsonb', default: AttributeType.String })
+  @Column({ type: 'varchar', default: AttributeType.String })
   public type: AttributeType;
 
   @CreateDateColumn({
