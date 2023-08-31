@@ -2,11 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { AttributeType } from '../attributes.types';
 import { ApiProperty } from '@nestjs/swagger';
+import { ProductAttributeGroup } from '../../products/entities/product-attribute-group.entity';
 
 @Entity()
 export class Attribute {
@@ -46,6 +48,12 @@ export class Attribute {
   })
   @Column({ type: 'varchar', default: AttributeType.String })
   public type: AttributeType;
+
+  @ManyToMany(
+    () => ProductAttributeGroup,
+    (productAttributeGroup) => productAttributeGroup.attributes,
+  )
+  public attributeGroups: ProductAttributeGroup[];
 
   @CreateDateColumn({
     type: 'timestamp',

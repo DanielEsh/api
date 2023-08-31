@@ -3,9 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Product } from '../../products/entities/product.entity';
 
 @Entity()
 export class Brand {
@@ -37,6 +39,9 @@ export class Brand {
   })
   @Column({ type: 'varchar', default: '' })
   public description: string;
+
+  @OneToMany(() => Product, (product) => product.category)
+  public products: Product[];
 
   @ApiProperty({
     description: 'created timestamp',
