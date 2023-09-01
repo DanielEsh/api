@@ -49,6 +49,25 @@ export class CrudService<T> implements ICrudService<T> {
 
     const queryBuilder = this.repository.createQueryBuilder(this.entityName);
 
+    if (this.entityName === 'products') {
+      queryBuilder.leftJoin('products.category', 'category');
+      queryBuilder.leftJoin('products.brand', 'brand');
+      queryBuilder.select([
+        'products.id',
+        'products.article',
+        'products.name',
+        'products.price',
+        'products.description',
+        'products.attributeGroup',
+        'category.id',
+        'category.slug',
+        'category.name',
+        'brand.id',
+        'brand.slug',
+        'brand.name',
+      ]);
+    }
+
     const offset = (page - 1) * limit;
 
     if (sortBy?.length && orderBy?.length) {

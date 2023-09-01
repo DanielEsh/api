@@ -1,7 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  DefaultValuePipe,
+  Query,
+  ParseArrayPipe,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+
+const DEFAULT_VALUES = {
+  limit: 10,
+  page: 1,
+  sort_by: [],
+  order_by: [],
+};
 
 @Controller('products')
 export class ProductsController {
@@ -13,8 +33,36 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  @ApiOperation({ summary: 'Read products' })
+  @ApiQuery({ name: 'page', type: Number, example: 1, required: true })
+  @ApiQuery({ name: 'limit', type: Number, example: 10, required: true })
+  @ApiQuery({ name: 'sort_by', type: String, example: null, required: false })
+  @ApiQuery({ name: 'order_by', type: String, example: null, required: false })
+  @Get()
+  findAll(
+    @Query('page', new DefaultValuePipe(DEFAULT_VALUES.page), ParseIntPipe)
+    page,
+    @Query('limit', new DefaultValuePipe(DEFAULT_VALUES.limit), ParseIntPipe)
+    limit,
+    @Query(
+      'sort_by',
+      new DefaultValuePipe(DEFAULT_VALUES.sort_by),
+      ParseArrayPipe,
+    )
+    sortBy,
+    @Query(
+      'order_by',
+      new DefaultValuePipe(DEFAULT_VALUES.order_by),
+      ParseArrayPipe,
+    )
+    orderBy,
+  ) {
+    return this.productsService.findAll({
+      sortBy,
+      orderBy,
+      page,
+      limit,
+    });
   }
 
   @Get(':id')

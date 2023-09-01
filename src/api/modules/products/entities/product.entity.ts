@@ -3,7 +3,6 @@ import {
   Column,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Brand } from '../../brands/entities/brand.entity';
@@ -21,7 +20,7 @@ export class Product extends BaseEntity {
   @Column({ type: 'varchar' })
   public name: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal' })
   public price: number;
 
   @Column({ type: 'text', nullable: true })
@@ -33,9 +32,10 @@ export class Product extends BaseEntity {
   @ManyToOne(() => Brand, (brand) => brand.products)
   public brand: Brand;
 
-  @OneToMany(
-    () => ProductAttributeGroup,
-    (productAttributeGroup) => productAttributeGroup.product,
-  )
+  // @OneToMany(
+  //   () => ProductAttributeGroup,
+  //   (productAttributeGroup) => productAttributeGroup.product,
+  // )
+  @Column('jsonb', { array: true, nullable: true })
   public attributeGroup: ProductAttributeGroup[];
 }
