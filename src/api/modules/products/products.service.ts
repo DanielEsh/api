@@ -83,7 +83,10 @@ export class ProductsService {
     );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    return await this.crudService.delete({
+      name: 'id',
+      value: id,
+    });
   }
 }
