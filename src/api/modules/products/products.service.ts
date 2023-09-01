@@ -25,8 +25,21 @@ export class ProductsService {
     );
   }
 
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  async create(createProductDto: CreateProductDto) {
+    const createdProduct = new Product();
+    createdProduct.article = createProductDto.article;
+    createdProduct.name = createProductDto.name;
+    createdProduct.price = createProductDto.price;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    createdProduct.brand = createProductDto.brandId;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    createdProduct.category = createProductDto.categoryId;
+    createdProduct.description = createProductDto?.description;
+    createdProduct.attributeGroup = null;
+
+    return await this.crudService.create(createdProduct);
   }
 
   async findAll(options: PaginationsParams) {

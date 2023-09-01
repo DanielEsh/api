@@ -32,10 +32,6 @@ export class Product extends BaseEntity {
   @ManyToOne(() => Brand, (brand) => brand.products)
   public brand: Brand;
 
-  // @OneToMany(
-  //   () => ProductAttributeGroup,
-  //   (productAttributeGroup) => productAttributeGroup.product,
-  // )
   @Column('jsonb', { array: true, nullable: true })
   public attributeGroup: ProductAttributeGroup[];
 }

@@ -10,11 +10,22 @@ import {
   Query,
   ParseArrayPipe,
   ParseIntPipe,
+  UsePipes,
+  ValidationPipe,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Product } from './entities/product.entity';
 
 const DEFAULT_VALUES = {
   limit: 10,
@@ -23,13 +34,23 @@ const DEFAULT_VALUES = {
   order_by: [],
 };
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @ApiOperation({ summary: 'Create product' })
+  @ApiBody({ type: CreateProductDto })
+  @ApiCreatedResponse({ type: Product })
+  @Post()
+  @UsePipes(new ValidationPipe())
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+    try {
+      return this.productsService.create(createProductDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.CONFLICT);
+    }
   }
 
   @Get()
