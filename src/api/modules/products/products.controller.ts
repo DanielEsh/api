@@ -21,7 +21,9 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import {
   ApiBody,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -86,6 +88,14 @@ export class ProductsController {
     });
   }
 
+  @ApiOperation({ summary: 'Read product by id' })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: '1',
+    required: true,
+  })
+  @ApiOkResponse({ type: Product })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);

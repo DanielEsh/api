@@ -57,8 +57,11 @@ export class ProductsService {
     return await this.crudService.readAll(options, selectedFields);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    return await this.crudService.readOne({
+      name: 'id',
+      value: id,
+    });
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
