@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
-import { CrudService, ICrudService, PaginationsParams } from 'src/shared/crud';
+import {
+  CrudService,
+  ICrudService,
+  PaginationsParams,
+  type JoinedEntitiesMapper,
+} from 'src/shared/crud';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -25,7 +30,18 @@ export class ProductsService {
   }
 
   async findAll(options: PaginationsParams) {
-    return await this.crudService.readAll(options);
+    const selectedFields: JoinedEntitiesMapper[] = [
+      {
+        entity: 'category',
+        fields: ['id', 'slug', 'name'],
+      },
+      {
+        entity: 'brand',
+        fields: ['id', 'slug', 'name'],
+      },
+    ];
+
+    return await this.crudService.readAll(options, selectedFields);
   }
 
   findOne(id: number) {

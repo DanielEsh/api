@@ -16,9 +16,17 @@ interface Param<T> {
   value: any;
 }
 
+export interface JoinedEntitiesMapper {
+  entity: string;
+  fields: string[];
+}
+
 export interface ICrudService<T> {
   create(entity: T): Promise<T>;
-  readAll(options: PaginationsParams): Promise<PageableResponse<T>>;
+  readAll(
+    options: PaginationsParams,
+    selectedFields?: any,
+  ): Promise<PageableResponse<T>>;
   readOne(param: Param<T>): Promise<T>;
   readOneById(id: number): Promise<T>;
   findByParam(param: Param<T>): Promise<T>;
@@ -44,28 +52,28 @@ export class CrudService<T> implements ICrudService<T> {
     }
   }
 
-  async readAll(options: PaginationsParams): Promise<PageableResponse<T>> {
+  async readAll(
+    options: PaginationsParams,
+    joinedEntitiesMapper: JoinedEntitiesMapper[] = [],
+  ): Promise<PageableResponse<T>> {
     const { page, limit, sortBy, orderBy } = options;
-
     const queryBuilder = this.repository.createQueryBuilder(this.entityName);
 
-    if (this.entityName === 'products') {
-      queryBuilder.leftJoin('products.category', 'category');
-      queryBuilder.leftJoin('products.brand', 'brand');
-      queryBuilder.select([
-        'products.id',
-        'products.article',
-        'products.name',
-        'products.price',
-        'products.description',
-        'products.attributeGroup',
-        'category.id',
-        'category.slug',
-        'category.name',
-        'brand.id',
-        'brand.slug',
-        'brand.name',
-      ]);
+    if (joinedEntitiesMapper.length) {
+      joinedEntitiesMapper.forEach((joinedObj) => {
+        const { entity, fields } = joinedObj;
+
+        if (fields) {
+          queryBuilder.leftJoin(
+            `${this.entityName}.${entity}`,
+            joinedObj.entity,
+          );
+
+          fields.forEach((field) => {
+            queryBuilder.addSelect(`${entity}.${field}`);
+          });
+        }
+      });
     }
 
     const offset = (page - 1) * limit;
