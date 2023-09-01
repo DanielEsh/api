@@ -53,7 +53,7 @@ export class CreateProductDto {
   public categoryId: number;
 
   @ApiProperty({
-    example: [],
+    example: null,
     description: 'Product attribute group',
     required: false,
   })

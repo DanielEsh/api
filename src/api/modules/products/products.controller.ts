@@ -101,6 +101,15 @@ export class ProductsController {
     return this.productsService.findOne(+id);
   }
 
+  @ApiOperation({ summary: 'Update product by id' })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: '21',
+    required: true,
+  })
+  @ApiBody({ type: UpdateProductDto })
+  @ApiOkResponse({ type: Product })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(+id, updateProductDto);
