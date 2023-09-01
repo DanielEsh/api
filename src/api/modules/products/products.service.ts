@@ -58,10 +58,22 @@ export class ProductsService {
   }
 
   async findOne(id: number) {
-    return await this.crudService.readOne({
-      name: 'id',
-      value: id,
-    });
+    return await this.crudService.readOne(
+      {
+        name: 'id',
+        value: id,
+      },
+      [
+        {
+          entity: 'category',
+          fields: ['id', 'slug', 'name'],
+        },
+        {
+          entity: 'brand',
+          fields: ['id', 'slug', 'name'],
+        },
+      ],
+    );
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {

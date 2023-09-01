@@ -25,11 +25,17 @@ export interface ICrudService<T> {
   create(entity: T): Promise<T>;
   readAll(
     options: PaginationsParams,
-    selectedFields?: any,
+    joinedEntitiesMapper?: JoinedEntitiesMapper[],
   ): Promise<PageableResponse<T>>;
-  readOne(param: Param<T>): Promise<T>;
+  readOne(
+    param: Param<T>,
+    joinedEntitiesMapper?: JoinedEntitiesMapper[],
+  ): Promise<T>;
   readOneById(id: number): Promise<T>;
-  findByParam(param: Param<T>): Promise<T>;
+  findByParam(
+    param: Param<T>,
+    joinedEntitiesMapper?: JoinedEntitiesMapper[],
+  ): Promise<T>;
   update(findEntityParam: Param<T>, updatedData: Partial<T>): Promise<T>;
   delete(findEntityParam: Param<T>): Promise<T>;
 }
@@ -113,8 +119,11 @@ export class CrudService<T> implements ICrudService<T> {
     return pagination;
   }
 
-  async readOne(param: Param<T>): Promise<T> {
-    return await this.findByParam(param);
+  async readOne(
+    param: Param<T>,
+    joinedEntitiesMapper: JoinedEntitiesMapper[] = [],
+  ): Promise<T> {
+    return await this.findByParam(param, joinedEntitiesMapper);
   }
 
   async readOneById(id: number) {
@@ -126,15 +135,39 @@ export class CrudService<T> implements ICrudService<T> {
     });
   }
 
-  async findByParam(param: Param<T>): Promise<T> {
-    const entity = await this.repository.findOne({
-      where: {
-        [param.name]: param.value,
-      } as any,
-    });
+  async findByParam(
+    param: Param<T>,
+    joinedEntitiesMapper: JoinedEntitiesMapper[] = [],
+  ): Promise<T> {
+    const queryBuilder = this.repository.createQueryBuilder(this.entityName);
+
+    if (joinedEntitiesMapper.length) {
+      joinedEntitiesMapper.forEach((joinedObj) => {
+        const { entity, fields } = joinedObj;
+
+        if (fields) {
+          queryBuilder.leftJoin(
+            `${this.entityName}.${entity}`,
+            joinedObj.entity,
+          );
+
+          fields.forEach((field) => {
+            queryBuilder.addSelect(`${entity}.${field}`);
+          });
+        }
+      });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    queryBuilder.where(`${this.entityName}.${param.name} = ${param.value}`);
+
+    const entity = await queryBuilder.getOne();
+
+    console.log('SQL', queryBuilder.getSql());
 
     if (!entity) {
-      throw new NotFoundException('Entity not found');
+      throw new NotFoundException(`${this.entityName} not found`);
     }
 
     return entity;
