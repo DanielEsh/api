@@ -164,10 +164,8 @@ export class CrudService<T> implements ICrudService<T> {
 
     const entity = await queryBuilder.getOne();
 
-    console.log('SQL', queryBuilder.getSql());
-
     if (!entity) {
-      throw new NotFoundException(`${this.entityName} not found`);
+      throw new NotFoundException(`Entity not found`);
     }
 
     return entity;
