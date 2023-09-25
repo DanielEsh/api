@@ -20,7 +20,7 @@ export class Product extends BaseEntity {
   @Column({ type: 'varchar' })
   public name: string;
 
-  @Column({ type: 'decimal' })
+  @Column({ type: 'int' })
   public price: number;
 
   @Column({ type: 'text', nullable: true })
