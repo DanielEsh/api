@@ -8,7 +8,7 @@ import {
 import { Product } from './product.entity';
 // import { Attribute } from '../../attributes/entities/attribute.entity';
 
-interface AttributesGroupAttribute {
+export interface AttributesGroupAttribute {
   attributeId: number;
   value: string;
 }

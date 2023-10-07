@@ -57,5 +57,5 @@ export class CreateProductDto {
     description: 'Product attribute group',
     required: false,
   })
-  public attributeGroup?: any[];
+  public attributesGroups?: any[];
 }

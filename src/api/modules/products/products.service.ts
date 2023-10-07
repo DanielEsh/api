@@ -11,6 +11,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductAttributeGroup } from './entities/product-attribute-group.entity';
+import { CreateAttributesGroupDto } from './dto/create-attributes-group.dto';
 
 @Injectable()
 export class ProductsService {
@@ -42,25 +43,25 @@ export class ProductsService {
     createdProduct.category = createProductDto.categoryId;
     createdProduct.description = createProductDto?.description;
 
-    const productAttributesGroup = await this.createAttributesGroup({
-      name: 'new name',
-    });
-
-    createdProduct.attributeGroup = [productAttributesGroup];
+    if (createProductDto.attributesGroups.length) {
+      createdProduct.attributeGroup = await Promise.all(
+        createProductDto.attributesGroups.map(async (attributesGroup) => {
+          return await this.createAttributesGroup({
+            name: attributesGroup.name,
+            attributes: attributesGroup.attributes,
+          });
+        }),
+      );
+    }
 
     return await this.crudService.create(createdProduct);
   }
 
-  async createAttributesGroup(dto: any) {
+  async createAttributesGroup(dto: CreateAttributesGroupDto) {
     const productAttributesGroup = new ProductAttributeGroup();
 
     productAttributesGroup.name = dto.name;
-    productAttributesGroup.attributes = [
-      {
-        attributeId: 1,
-        value: 'test value',
-      },
-    ];
+    productAttributesGroup.attributes = dto.attributes;
 
     return await this.productAttributeGroupRepository.save(
       productAttributesGroup,
