@@ -8,6 +8,11 @@ import {
 import { Product } from './product.entity';
 // import { Attribute } from '../../attributes/entities/attribute.entity';
 
+interface AttributesGroupAttribute {
+  attributeId: number;
+  value: string;
+}
+
 @Entity()
 export class ProductAttributeGroup extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -18,6 +23,9 @@ export class ProductAttributeGroup extends BaseEntity {
 
   @ManyToMany(() => Product, (product) => product.attributeGroup)
   public product: Product;
+
+  @Column({ type: 'jsonb', nullable: true, default: [] })
+  public attributes: AttributesGroupAttribute[];
 
   // @ManyToMany(() => Attribute, (attribute) => attribute.attributeGroups)
   // public attributes: Attribute[];

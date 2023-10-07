@@ -55,6 +55,12 @@ export class ProductsService {
     const productAttributesGroup = new ProductAttributeGroup();
 
     productAttributesGroup.name = dto.name;
+    productAttributesGroup.attributes = [
+      {
+        attributeId: 1,
+        value: 'test value',
+      },
+    ];
 
     return await this.productAttributeGroupRepository.save(
       productAttributesGroup,
@@ -93,7 +99,7 @@ export class ProductsService {
         },
         {
           entity: 'attributeGroup',
-          fields: ['id', 'name'],
+          fields: ['id', 'name', 'attributes'],
         },
       ],
     );
