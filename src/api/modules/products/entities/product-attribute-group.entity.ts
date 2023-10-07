@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Product } from './product.entity';
-import { Attribute } from '../../attributes/entities/attribute.entity';
+// import { Attribute } from '../../attributes/entities/attribute.entity';
 
 @Entity()
 export class ProductAttributeGroup extends BaseEntity {
@@ -19,6 +19,6 @@ export class ProductAttributeGroup extends BaseEntity {
   @ManyToMany(() => Product, (product) => product.attributeGroup)
   public product: Product;
 
-  @ManyToMany(() => Attribute, (attribute) => attribute.attributeGroups)
-  public attributes: Attribute[];
+  // @ManyToMany(() => Attribute, (attribute) => attribute.attributeGroups)
+  // public attributes: Attribute[];
 }

@@ -2,8 +2,10 @@ import {
   BaseEntity,
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  JoinTable,
 } from 'typeorm';
 import { Brand } from '../../brands/entities/brand.entity';
 import { Category } from '../../categories/entities/category.entity';
@@ -32,6 +34,7 @@ export class Product extends BaseEntity {
   @ManyToOne(() => Brand, (brand) => brand.products)
   public brand: Brand;
 
-  @Column('jsonb', { array: true, nullable: true })
+  @ManyToMany(() => ProductAttributeGroup)
+  @JoinTable()
   public attributeGroup: ProductAttributeGroup[];
 }

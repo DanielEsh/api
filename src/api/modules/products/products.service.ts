@@ -10,6 +10,7 @@ import {
 } from 'src/shared/crud';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ProductAttributeGroup } from './entities/product-attribute-group.entity';
 
 @Injectable()
 export class ProductsService {
@@ -18,6 +19,9 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+
+    @InjectRepository(ProductAttributeGroup)
+    private readonly productAttributeGroupRepository: Repository<ProductAttributeGroup>,
   ) {
     this.crudService = new CrudService<Product>(
       this.productRepository,
@@ -37,9 +41,24 @@ export class ProductsService {
     // @ts-ignore
     createdProduct.category = createProductDto.categoryId;
     createdProduct.description = createProductDto?.description;
-    createdProduct.attributeGroup = null;
+
+    const productAttributesGroup = await this.createAttributesGroup({
+      name: 'new name',
+    });
+
+    createdProduct.attributeGroup = [productAttributesGroup];
 
     return await this.crudService.create(createdProduct);
+  }
+
+  async createAttributesGroup(dto: any) {
+    const productAttributesGroup = new ProductAttributeGroup();
+
+    productAttributesGroup.name = dto.name;
+
+    return await this.productAttributeGroupRepository.save(
+      productAttributesGroup,
+    );
   }
 
   async findAll(options: PaginationsParams) {
@@ -71,6 +90,10 @@ export class ProductsService {
         {
           entity: 'brand',
           fields: ['id', 'slug', 'name'],
+        },
+        {
+          entity: 'attributeGroup',
+          fields: ['id', 'name'],
         },
       ],
     );
