@@ -96,10 +96,6 @@ export class ProductsService {
           entity: 'brand',
           fields: ['id', 'slug', 'name'],
         },
-        {
-          entity: 'attributeGroup',
-          fields: ['id', 'name', 'attributes'],
-        },
       ],
     );
   }
