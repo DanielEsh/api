@@ -63,9 +63,7 @@ export class ProductsService {
     productAttributesGroup.name = dto.name;
     productAttributesGroup.attributes = dto.attributes;
 
-    return await this.productAttributeGroupRepository.save(
-      productAttributesGroup,
-    );
+    return productAttributesGroup;
   }
 
   async findAll(options: PaginationsParams) {
