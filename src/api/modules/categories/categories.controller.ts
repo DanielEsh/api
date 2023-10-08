@@ -86,17 +86,17 @@ export class CategoriesController {
     });
   }
 
-  @ApiOperation({ summary: 'Read category by slug param' })
+  @ApiOperation({ summary: 'Read category by id param' })
   @ApiParam({
-    name: 'slug',
-    type: String,
-    example: 'example-slug',
+    name: 'id',
+    type: Number,
+    example: 10,
     required: true,
   })
   @ApiOkResponse({ type: Category })
-  @Get(':slug')
-  findOne(@Param('slug') slug: string) {
-    return this.categoriesService.findOneBySlug(slug);
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.categoriesService.findOneById(id);
   }
 
   @ApiOperation({ summary: 'Update category by slug param' })
