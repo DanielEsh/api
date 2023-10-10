@@ -147,6 +147,21 @@ export class ProductsService {
     productToUpdate.category = updatedCategory;
     productToUpdate.description = updateProductDto?.description;
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (updateProductDto.attributeGroup.length) {
+      productToUpdate.attributeGroup = await Promise.all(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        updateProductDto.attributeGroup.map(async (attributesGroup) => {
+          return await this.createAttributesGroup({
+            name: attributesGroup.name,
+            attributes: attributesGroup.attributes,
+          });
+        }),
+      );
+    }
+
     return await this.productRepository.save(productToUpdate);
   }
 
