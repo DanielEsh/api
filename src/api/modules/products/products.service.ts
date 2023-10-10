@@ -48,9 +48,13 @@ export class ProductsService {
     createdProduct.category = createProductDto.categoryId;
     createdProduct.description = createProductDto?.description;
 
-    if (createProductDto.attributesGroups.length) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (createProductDto.attributeGroup.length) {
       createdProduct.attributeGroup = await Promise.all(
-        createProductDto.attributesGroups.map(async (attributesGroup) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        createProductDto.attributeGroup.map(async (attributesGroup) => {
           return await this.createAttributesGroup({
             name: attributesGroup.name,
             attributes: attributesGroup.attributes,
