@@ -1,4 +1,4 @@
-import { Role } from '@/api/auth/roles.enum';
+import { Role } from '../../auth/roles.enum';
 
 export class UpdateDto {
   public readonly name?: string;
