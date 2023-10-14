@@ -9,7 +9,7 @@ import { UserService } from '../user/user.service';
 import { AuthHelper } from './helpers/auth.helpers';
 import { User } from '../user/entity/user.entity';
 import { Response } from 'express';
-import { cookieOptions } from '@/utils/cookie';
+import { cookieOptions } from '../../../utils/cookie';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
