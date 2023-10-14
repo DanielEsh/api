@@ -37,7 +37,7 @@ export class RoleService {
     return await this.roleRepository.findOne({ where: { id } });
   }
 
-  public async updateUserById(id: number, dto: RoleUpdateDto) {
+  public async updateById(id: number, dto: RoleUpdateDto) {
     const currentRole = await this.findById(id);
 
     currentRole.name = dto?.name;
