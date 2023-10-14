@@ -41,8 +41,8 @@ export class AuthService {
   }
 
   async signIn(user: User, res: Response) {
-    const accessToken = await this.authHelper.generateAccessToken(user);
-    const refreshToken = await this.authHelper.generateRefreshToken(user);
+    const accessToken = this.authHelper.generateAccessToken(user);
+    const refreshToken = this.authHelper.generateRefreshToken(user);
     await this.usersService.updateRefreshTokenHash(user.id, refreshToken);
     res.cookie('accessToken', accessToken, cookieOptions);
     res.cookie('refreshToken', refreshToken, cookieOptions);

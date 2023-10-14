@@ -89,6 +89,7 @@ export class UserController {
   @Get('admin')
   admin(@Request() req) {
     const { user } = req;
+    console.log('USER', user);
     return 'Admin route';
   }
 
