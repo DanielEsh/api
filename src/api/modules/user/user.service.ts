@@ -70,6 +70,13 @@ export class UserService {
     return { deleted: true };
   }
 
+  async updateRefreshTokenHash(userId: number, refreshToken: string) {
+    const hash = await this.hashData(refreshToken);
+    await this.updateUserById(userId, {
+      hashedRefreshToken: hash,
+    });
+  }
+
   hashData(data: string) {
     return bcrypt.hash(data, 10);
   }
