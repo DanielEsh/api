@@ -3,15 +3,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from './entity/user.entity';
-import { UpdateDto } from './dto/updateDto';
+import { UserUpdateDto } from './dto/user-update.dto';
+import {
+  CrudService,
+  ICrudService,
+  PaginationsParams,
+} from '../../../shared/crud';
 
 @Injectable()
 export class UserService {
-  @InjectRepository(User)
-  private readonly userRepository: Repository<User>;
+  protected readonly crudService: ICrudService<User>;
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {
+    this.crudService = new CrudService<User>(this.userRepository, 'user');
+  }
 
-  async findAll() {
-    return await this.userRepository.find();
+  async findAll(options: PaginationsParams) {
+    return await this.crudService.readAll(options);
   }
 
   async findUserByEmailOrName(payload: string): Promise<User | undefined> {
@@ -25,14 +35,11 @@ export class UserService {
     return await this.userRepository.findOne({ where: { id } });
   }
 
-  public async updateUserById(id: number, body: UpdateDto) {
+  public async updateUserById(id: number, body: UserUpdateDto) {
     const user = await this.findById(id);
 
     user.name = body?.name || user.name;
     user.email = body?.email || user.email;
-    user.roles = body?.roles || user.roles;
-    user.hashedRefreshToken =
-      body?.hashedRefreshToken || user.hashedRefreshToken;
 
     return this.userRepository.save(user);
   }
@@ -61,13 +68,6 @@ export class UserService {
   public async delete(id: number) {
     await this.userRepository.delete({ id });
     return { deleted: true };
-  }
-
-  async updateRefreshTokenHash(userId: number, refreshToken: string) {
-    const hash = await this.hashData(refreshToken);
-    await this.updateUserById(userId, {
-      hashedRefreshToken: hash,
-    });
   }
 
   hashData(data: string) {
