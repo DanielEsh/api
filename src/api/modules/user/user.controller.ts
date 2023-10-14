@@ -11,12 +11,14 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
   ParseArrayPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { CreateProductDto } from '../products/dto/create-product.dto';
+import { AccessJwtAuthGuard } from '../auth/guards';
 
 const DEFAULT_VALUES = {
   limit: 10,
@@ -78,11 +80,12 @@ export class UserController {
     return await this.userService.delete(id);
   }
 
-  @Get('/guest/')
+  @Get('/guest')
   guest() {
     return 'Guest route';
   }
 
+  @UseGuards(AccessJwtAuthGuard)
   @Get('admin')
   admin(@Request() req) {
     const { user } = req;
