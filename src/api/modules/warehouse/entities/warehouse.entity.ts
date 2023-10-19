@@ -1,7 +1,13 @@
-import { BaseEntity } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Warehouse extends BaseEntity {
-  id: number;
+  @PrimaryGeneratedColumn()
+  public id!: number;
+
+  @Column({ type: 'varchar' })
   name: string;
+
+  @Column({ type: 'varchar' })
   address: string;
 }

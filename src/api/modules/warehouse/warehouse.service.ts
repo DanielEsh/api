@@ -7,6 +7,7 @@ import {
   ICrudService,
   PaginationsParams,
 } from '../../../shared/crud';
+import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
 
 @Injectable()
 export class WarehouseService {
@@ -33,8 +34,24 @@ export class WarehouseService {
     return await this.crudService.readAll(options);
   }
 
-  async findOne(id: number) {
+  async findOneById(id: number) {
     return await this.crudService.readOne({
+      name: 'id',
+      value: id,
+    });
+  }
+
+  async update(id: number, updateWarehouseDto: UpdateWarehouseDto) {
+    const updatedWarehouse = await this.findOneById(id);
+
+    updatedWarehouse.name = updateWarehouseDto.name;
+    updatedWarehouse.address = updateWarehouseDto.address;
+
+    return await this.warehouseRepository.save(updatedWarehouse);
+  }
+
+  async remove(id: number) {
+    return await this.crudService.delete({
       name: 'id',
       value: id,
     });
