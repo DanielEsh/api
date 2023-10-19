@@ -1,4 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Warehouse } from './entities/warehouse.entity';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
@@ -13,7 +14,7 @@ import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
 export class WarehouseService {
   protected readonly crudService: ICrudService<Warehouse>;
   constructor(
-    @Inject(Warehouse)
+    @InjectRepository(Warehouse)
     private warehouseRepository: Repository<Warehouse>,
   ) {
     this.crudService = new CrudService<Warehouse>(

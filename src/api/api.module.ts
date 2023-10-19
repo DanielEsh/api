@@ -6,7 +6,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RoleModule } from './modules/role/role.module';
-import { Warehouse } from './modules/warehouse/entities/warehouse.entity';
+import { WarehouseModule } from './modules/warehouse/warehouse.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { Warehouse } from './modules/warehouse/entities/warehouse.entity';
     UserModule,
     AuthModule,
     RoleModule,
-    Warehouse,
+    WarehouseModule,
   ],
 })
 export class ApiModule {}
