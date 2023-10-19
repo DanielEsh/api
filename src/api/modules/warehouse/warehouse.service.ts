@@ -26,7 +26,7 @@ export class WarehouseService {
     const newWarehouse = new Warehouse();
 
     newWarehouse.name = createWarehouseDto.name;
-    newWarehouse.address = createWarehouseDto.address;
+    newWarehouse.address = createWarehouseDto.address ?? '';
 
     return this.warehouseRepository.save(newWarehouse);
   }
@@ -46,7 +46,8 @@ export class WarehouseService {
     const updatedWarehouse = await this.findOneById(id);
 
     updatedWarehouse.name = updateWarehouseDto.name;
-    updatedWarehouse.address = updateWarehouseDto.address;
+    updatedWarehouse.address =
+      updateWarehouseDto.address ?? updatedWarehouse.address;
 
     return await this.warehouseRepository.save(updatedWarehouse);
   }
