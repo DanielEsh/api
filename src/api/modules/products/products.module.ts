@@ -19,6 +19,7 @@ import { WarehouseProducts } from '../warehouse/entities/warehouse-products.enti
     ]),
   ],
   controllers: [ProductsController],
+  exports: [ProductsService],
   providers: [ProductsService],
 })
 export class ProductsModule {}

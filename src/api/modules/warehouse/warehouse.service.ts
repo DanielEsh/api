@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Warehouse } from './entities/warehouse.entity';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../../../shared/crud';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
 import { WarehouseProducts } from './entities/warehouse-products.entity';
+import { ProductsService } from '../products/products.service';
 
 @Injectable()
 export class WarehouseService {
@@ -20,6 +21,8 @@ export class WarehouseService {
 
     @InjectRepository(WarehouseProducts)
     private warehouseProductsRepository: Repository<WarehouseProducts>,
+    private entityManager: EntityManager,
+    private productService: ProductsService,
   ) {
     this.crudService = new CrudService<Warehouse>(
       this.warehouseRepository,
@@ -57,14 +60,49 @@ export class WarehouseService {
     return warehouse;
   }
 
+  private async updateWarehouseProducts(
+    warehouse: Warehouse,
+    updatedProductsData: UpdateWarehouseDto['products'],
+  ) {
+    await this.entityManager
+      .createQueryBuilder()
+      .delete()
+      .from(WarehouseProducts)
+      .where('warehouse.id = :warehouseId', { warehouseId: warehouse.id })
+      .execute();
+
+    for (const productData of updatedProductsData) {
+      const product = await this.productService.findOne(productData.productId);
+
+      const newWarehouseProduct = this.warehouseProductsRepository.create({
+        product,
+        warehouse: warehouse,
+        quantity: productData.quantity,
+      });
+      await this.warehouseProductsRepository.save(newWarehouseProduct);
+    }
+  }
+
   async update(id: number, updateWarehouseDto: UpdateWarehouseDto) {
-    const updatedWarehouse = await this.findOneById(id);
+    const warehouse = await this.warehouseRepository.findOne({
+      where: {
+        id,
+      },
+    });
 
-    updatedWarehouse.name = updateWarehouseDto.name;
-    updatedWarehouse.address =
-      updateWarehouseDto.address ?? updatedWarehouse.address;
+    warehouse.name = updateWarehouseDto.name;
+    warehouse.address = updateWarehouseDto.address ?? warehouse.address;
 
-    return await this.warehouseRepository.save(updatedWarehouse);
+    const updateWarehouse = await this.warehouseRepository.save(warehouse);
+
+    if (updateWarehouseDto?.products?.length) {
+      await this.updateWarehouseProducts(
+        updateWarehouse,
+        updateWarehouseDto.products,
+      );
+    }
+
+    return updateWarehouse;
   }
 
   async remove(id: number) {
