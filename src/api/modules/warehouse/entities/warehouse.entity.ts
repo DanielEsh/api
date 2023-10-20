@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { WarehouseProducts } from './warehouse-products.entity';
 
 @Entity()
 export class Warehouse {
@@ -10,4 +11,10 @@ export class Warehouse {
 
   @Column({ type: 'varchar' })
   address: string;
+
+  @ManyToMany(
+    () => WarehouseProducts,
+    (warehouseProducts) => warehouseProducts.warehouse,
+  )
+  products: WarehouseProducts[];
 }

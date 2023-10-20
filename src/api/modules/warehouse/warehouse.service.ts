@@ -9,6 +9,7 @@ import {
   PaginationsParams,
 } from '../../../shared/crud';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
+import { WarehouseProducts } from './entities/warehouse-products.entity';
 
 @Injectable()
 export class WarehouseService {
@@ -16,6 +17,9 @@ export class WarehouseService {
   constructor(
     @InjectRepository(Warehouse)
     private warehouseRepository: Repository<Warehouse>,
+
+    @InjectRepository(WarehouseProducts)
+    private warehouseProductsRepository: Repository<WarehouseProducts>,
   ) {
     this.crudService = new CrudService<Warehouse>(
       this.warehouseRepository,
@@ -36,10 +40,21 @@ export class WarehouseService {
   }
 
   async findOneById(id: number) {
-    return await this.crudService.readOne({
+    const warehouse = await this.crudService.readOne({
       name: 'id',
       value: id,
     });
+
+    warehouse.products = await this.warehouseProductsRepository.find({
+      where: {
+        warehouse: {
+          id: warehouse.id,
+        },
+      },
+      relations: ['product'],
+    });
+
+    return warehouse;
   }
 
   async update(id: number, updateWarehouseDto: UpdateWarehouseDto) {
