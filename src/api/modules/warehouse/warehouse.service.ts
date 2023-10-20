@@ -117,7 +117,7 @@ export class WarehouseService {
 
     const updateWarehouse = await this.warehouseRepository.save(warehouse);
 
-    if (updateWarehouseDto?.products?.length) {
+    if (updateWarehouseDto?.products) {
       await this.updateWarehouseProducts(
         updateWarehouse,
         updateWarehouseDto.products,
