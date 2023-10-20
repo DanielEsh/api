@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { Warehouse } from './entities/warehouse.entity';
@@ -35,7 +35,29 @@ export class WarehouseService {
     newWarehouse.name = createWarehouseDto.name;
     newWarehouse.address = createWarehouseDto.address ?? '';
 
-    return this.warehouseRepository.save(newWarehouse);
+    await this.warehouseRepository.save(newWarehouse);
+
+    if (createWarehouseDto?.products?.length) {
+      for (const productData of createWarehouseDto.products) {
+        const product = await this.productService.findOne(
+          productData.productId,
+        );
+
+        if (!product) {
+          throw new NotFoundException();
+        }
+
+        const newWarehouseProduct = new WarehouseProducts();
+
+        newWarehouseProduct.product = product;
+        newWarehouseProduct.warehouse = newWarehouse;
+        newWarehouseProduct.quantity = productData.quantity;
+
+        await this.warehouseProductsRepository.save(newWarehouseProduct);
+      }
+    }
+
+    return newWarehouse;
   }
 
   async findAll(options: PaginationsParams) {
