@@ -21,4 +21,6 @@ export class UserCreateDto {
     required: true,
   })
   public readonly password: string;
+
+  public readonly isSuperUser: boolean;
 }

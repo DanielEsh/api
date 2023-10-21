@@ -26,6 +26,9 @@ export class User extends BaseEntity {
   })
   public roles: Role[];
 
+  @Column('boolean', { default: false })
+  public isSuperUser: boolean;
+
   @Column({ type: 'varchar', nullable: true })
   public hashedRefreshToken: string | null;
 }

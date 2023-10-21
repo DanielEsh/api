@@ -40,6 +40,8 @@ export class UserService {
 
     user.name = body?.name || user.name;
     user.email = body?.email || user.email;
+    user.isSuperUser = body?.isSuperUser || user.isSuperUser;
+
     user.hashedRefreshToken =
       body.hashedRefreshToken || user.hashedRefreshToken;
 
