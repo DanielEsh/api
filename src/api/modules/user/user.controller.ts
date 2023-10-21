@@ -19,6 +19,9 @@ import { UserCreateDto } from './dto/user-create.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { CreateProductDto } from '../products/dto/create-product.dto';
 import { AccessJwtAuthGuard } from '../auth/guards';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../auth/roles.enum';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 const DEFAULT_VALUES = {
   limit: 10,
@@ -92,8 +95,9 @@ export class UserController {
     return 'Guest route';
   }
 
-  @UseGuards(AccessJwtAuthGuard)
+  @UseGuards(AccessJwtAuthGuard, RolesGuard)
   @Get('admin')
+  @Roles(Role.ADMIN)
   admin(@Request() req) {
     const { user } = req;
     console.log('USER', user);
