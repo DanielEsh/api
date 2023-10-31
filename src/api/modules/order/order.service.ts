@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { Order } from './entity/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { parse } from 'ts-jest';
+import { OrderStatus } from './order-status.enum';
 
 @Injectable()
 export class OrderService {
@@ -28,9 +28,10 @@ export class OrderService {
     newOrder.email = createOrderDto.email;
     newOrder.phone = createOrderDto.phone;
     newOrder.comment = createOrderDto.comment;
+    newOrder.payment_status = createOrderDto.payment_status;
     newOrder.number = await this.generateNumber();
 
-    await this.orderRepository.save(newOrder);
+    return await this.orderRepository.save(newOrder);
   }
 
   async generateNumber() {
