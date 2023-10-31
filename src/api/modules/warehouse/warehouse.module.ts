@@ -6,11 +6,12 @@ import { WarehouseController } from './warehouse.controller';
 import { WarehouseProducts } from './entities/warehouse-products.entity';
 import { Product } from '../products/entities/product.entity';
 import { ProductsModule } from '../products/products.module';
+import { Order } from '../order/entity/order.entity';
 
 @Module({
   imports: [
     ProductsModule,
-    TypeOrmModule.forFeature([Warehouse, WarehouseProducts, Product]),
+    TypeOrmModule.forFeature([Warehouse, WarehouseProducts, Product, Order]),
   ],
   controllers: [WarehouseController],
   providers: [WarehouseService],

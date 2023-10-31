@@ -1,6 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { OrderPaymentStatus } from '../order-payment-status.enum';
 import { OrderStatus } from '../order-status.enum';
+import { Warehouse } from '../../warehouse/entities/warehouse.entity';
 
 @Entity()
 export class Order {
@@ -31,4 +38,7 @@ export class Order {
 
   @Column({ type: 'varchar' })
   public comment: string;
+
+  @ManyToOne(() => Warehouse, { nullable: true })
+  warehouse: Warehouse;
 }

@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { Order } from './entity/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OrderStatus } from './order-status.enum';
+import { Warehouse } from '../warehouse/entities/warehouse.entity';
 
 @Injectable()
 export class OrderService {
@@ -17,6 +17,9 @@ export class OrderService {
   constructor(
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
+
+    @InjectRepository(Warehouse)
+    private warehouseRepository: Repository<Warehouse>,
   ) {
     this.crudService = new CrudService<Order>(this.orderRepository, 'order');
   }
@@ -55,16 +58,36 @@ export class OrderService {
   }
 
   async findOneById(id: number) {
-    return await this.crudService.readOne({
-      name: 'id',
-      value: id,
-    });
+    return await this.crudService.readOne(
+      {
+        name: 'id',
+        value: id,
+      },
+      [
+        {
+          entity: 'warehouse',
+          fields: ['id'],
+        },
+      ],
+    );
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
-    return await this.crudService.update(
-      { name: 'id', value: id },
-      updateOrderDto,
-    );
+    const orderToUpdate = await this.findOneById(id);
+
+    const updatedWarehouse = await this.warehouseRepository.findOne({
+      where: {
+        id: updateOrderDto.warehouse,
+      },
+    });
+
+    orderToUpdate.name = updateOrderDto.name ?? orderToUpdate.name;
+    orderToUpdate.email = updateOrderDto.email ?? orderToUpdate.email;
+    orderToUpdate.phone = updateOrderDto.phone ?? orderToUpdate.phone;
+    orderToUpdate.comment = updateOrderDto.comment ?? orderToUpdate.comment;
+    orderToUpdate.status = updateOrderDto.status ?? orderToUpdate.status;
+    orderToUpdate.warehouse = updatedWarehouse ?? orderToUpdate.warehouse;
+
+    return await this.orderRepository.save(orderToUpdate);
   }
 }

@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { WarehouseProducts } from './warehouse-products.entity';
+import { Order } from '../../order/entity/order.entity';
 
 @Entity()
 export class Warehouse {
@@ -17,4 +24,7 @@ export class Warehouse {
     (warehouseProducts) => warehouseProducts.warehouse,
   )
   products: WarehouseProducts[];
+
+  @OneToMany(() => Order, (order) => order.warehouse)
+  public order: Order[];
 }
