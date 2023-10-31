@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { Order } from './entity/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { parse } from 'ts-jest';
 
 @Injectable()
 export class OrderService {
@@ -23,13 +24,29 @@ export class OrderService {
   async create(createOrderDto: CreateOrderDto) {
     const newOrder = new Order();
 
-    newOrder.number = createOrderDto.number;
     newOrder.name = createOrderDto.name;
     newOrder.email = createOrderDto.email;
     newOrder.phone = createOrderDto.phone;
     newOrder.comment = createOrderDto.comment;
+    newOrder.number = await this.generateNumber();
 
     await this.orderRepository.save(newOrder);
+  }
+
+  async generateNumber() {
+    const lastOrder = await this.orderRepository
+      .createQueryBuilder()
+      .orderBy('number', 'DESC')
+      .getOne();
+
+    const initNumber = '000001';
+
+    if (!lastOrder) {
+      return initNumber;
+    }
+
+    const lastNumber = parseInt(lastOrder.number);
+    return (lastNumber + 1).toString().padStart(6, '0');
   }
 
   async findAll(options: PaginationsParams) {

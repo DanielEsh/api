@@ -5,7 +5,7 @@ export class Order {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true })
   public number: string;
 
   @Column({ type: 'varchar' })
