@@ -1,8 +1,15 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { OrderPaymentStatus } from '../order-payment-status.enum';
 import { OrderStatus } from '../order-status.enum';
 import { Warehouse } from '../../warehouse/entities/warehouse.entity';
 import { Staff } from '../../staff/entity/staff.entity';
+import { OrderProducts } from './order-products.entity';
 
 @Entity()
 export class Order {
@@ -39,4 +46,7 @@ export class Order {
 
   @ManyToOne(() => Staff, { nullable: true })
   staff: Staff;
+
+  @ManyToMany(() => OrderProducts, (orderProducts) => orderProducts.order)
+  products: OrderProducts[];
 }

@@ -7,6 +7,7 @@ import { ProductAttributeGroup } from './entities/product-attribute-group.entity
 import { Category } from '../categories/entities/category.entity';
 import { Brand } from '../brands/entities/brand.entity';
 import { WarehouseProducts } from '../warehouse/entities/warehouse-products.entity';
+import { OrderProducts } from '../order/entity/order-products.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { WarehouseProducts } from '../warehouse/entities/warehouse-products.enti
       Category,
       Brand,
       WarehouseProducts,
+      OrderProducts,
     ]),
   ],
   controllers: [ProductsController],

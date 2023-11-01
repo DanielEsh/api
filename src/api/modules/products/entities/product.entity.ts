@@ -11,6 +11,7 @@ import { Brand } from '../../brands/entities/brand.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { ProductAttributeGroup } from './product-attribute-group.entity';
 import { WarehouseProducts } from '../../warehouse/entities/warehouse-products.entity';
+import { OrderProducts } from '../../order/entity/order-products.entity';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -44,4 +45,7 @@ export class Product extends BaseEntity {
   )
   @JoinTable()
   public warehouses: WarehouseProducts[];
+
+  @ManyToMany(() => OrderProducts, (orderProducts) => orderProducts.product)
+  public order_products: OrderProducts[];
 }
