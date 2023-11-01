@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderPaymentStatus } from '../order-payment-status.enum';
 import { OrderStatus } from '../order-status.enum';
 import { Warehouse } from '../../warehouse/entities/warehouse.entity';
