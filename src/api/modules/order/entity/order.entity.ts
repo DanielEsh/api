@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderPaymentStatus } from '../order-payment-status.enum';
 import { OrderStatus } from '../order-status.enum';
 import { Warehouse } from '../../warehouse/entities/warehouse.entity';
+import { Staff } from '../../staff/entity/staff.entity';
 
 @Entity()
 export class Order {
@@ -35,4 +36,7 @@ export class Order {
 
   @ManyToOne(() => Warehouse, { nullable: true })
   warehouse: Warehouse;
+
+  @ManyToOne(() => Staff, { nullable: true })
+  staff: Staff;
 }

@@ -10,6 +10,7 @@ import { Order } from './entity/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Warehouse } from '../warehouse/entities/warehouse.entity';
+import { Staff } from '../staff/entity/staff.entity';
 
 @Injectable()
 export class OrderService {
@@ -20,6 +21,9 @@ export class OrderService {
 
     @InjectRepository(Warehouse)
     private warehouseRepository: Repository<Warehouse>,
+
+    @InjectRepository(Staff)
+    private staffRepository: Repository<Staff>,
   ) {
     this.crudService = new CrudService<Order>(this.orderRepository, 'order');
   }
@@ -68,6 +72,10 @@ export class OrderService {
           entity: 'warehouse',
           fields: ['id'],
         },
+        {
+          entity: 'staff',
+          fields: ['id'],
+        },
       ],
     );
   }
@@ -81,12 +89,19 @@ export class OrderService {
       },
     });
 
+    const updatedStaff = await this.staffRepository.findOne({
+      where: {
+        id: updateOrderDto.staff,
+      },
+    });
+
     orderToUpdate.name = updateOrderDto.name ?? orderToUpdate.name;
     orderToUpdate.email = updateOrderDto.email ?? orderToUpdate.email;
     orderToUpdate.phone = updateOrderDto.phone ?? orderToUpdate.phone;
     orderToUpdate.comment = updateOrderDto.comment ?? orderToUpdate.comment;
     orderToUpdate.status = updateOrderDto.status ?? orderToUpdate.status;
     orderToUpdate.warehouse = updatedWarehouse ?? orderToUpdate.warehouse;
+    orderToUpdate.staff = updatedStaff ?? orderToUpdate.staff;
 
     return await this.orderRepository.save(orderToUpdate);
   }

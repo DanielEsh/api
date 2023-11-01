@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Order } from '../../order/entity/order.entity';
 
 @Entity()
 export class Staff {
@@ -19,4 +20,7 @@ export class Staff {
 
   @Column({ type: 'varchar', nullable: true })
   public email: string;
+
+  @OneToMany(() => Order, (order) => order.staff)
+  public orders: Order[];
 }
