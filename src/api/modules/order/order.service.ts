@@ -11,6 +11,8 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Warehouse } from '../warehouse/entities/warehouse.entity';
 import { Staff } from '../staff/entity/staff.entity';
+import { Product } from '../products/entities/product.entity';
+import { OrderProducts } from './entity/order-products.entity';
 
 @Injectable()
 export class OrderService {
@@ -24,6 +26,12 @@ export class OrderService {
 
     @InjectRepository(Staff)
     private staffRepository: Repository<Staff>,
+
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
+
+    @InjectRepository(OrderProducts)
+    private orderProductsRepository: Repository<OrderProducts>,
   ) {
     this.crudService = new CrudService<Order>(this.orderRepository, 'order');
   }
@@ -38,7 +46,27 @@ export class OrderService {
     newOrder.payment_status = createOrderDto.payment_status;
     newOrder.number = await this.generateNumber();
 
-    return await this.orderRepository.save(newOrder);
+    const savedOrder = await this.orderRepository.save(newOrder);
+
+    if (createOrderDto.products.length) {
+      for (const productData of createOrderDto.products) {
+        const product = await this.productRepository.findOne({
+          where: {
+            id: productData.id,
+          },
+        });
+
+        const newOrderProduct = new OrderProducts();
+
+        newOrderProduct.product = product;
+        newOrderProduct.order = newOrder;
+        newOrderProduct.count = productData.count;
+
+        await this.orderProductsRepository.save(newOrderProduct);
+      }
+    }
+
+    return savedOrder;
   }
 
   async generateNumber() {
@@ -62,7 +90,7 @@ export class OrderService {
   }
 
   async findOneById(id: number) {
-    return await this.crudService.readOne(
+    const order = await this.crudService.readOne(
       {
         name: 'id',
         value: id,
@@ -78,6 +106,17 @@ export class OrderService {
         },
       ],
     );
+
+    order.products = await this.orderProductsRepository.find({
+      where: {
+        order: {
+          id: order.id,
+        },
+      },
+      relations: ['product'],
+    });
+
+    return order;
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
