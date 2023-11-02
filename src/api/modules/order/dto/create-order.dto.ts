@@ -12,5 +12,6 @@ export class CreateOrderDto {
   email: string;
   phone: number;
   comment: string;
+  total_count: number;
   products: CreatedOrderProducts[];
 }

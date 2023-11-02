@@ -41,6 +41,9 @@ export class Order {
   @Column({ type: 'varchar' })
   public comment: string;
 
+  @Column({ type: 'bigint' })
+  public total_price: number;
+
   @ManyToOne(() => Warehouse, { nullable: true })
   warehouse: Warehouse;
 
