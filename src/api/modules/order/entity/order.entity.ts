@@ -38,7 +38,7 @@ export class Order {
   @Column({ type: 'bigint' })
   public phone: number;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   public comment: string;
 
   @Column({ type: 'bigint' })

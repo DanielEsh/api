@@ -43,7 +43,7 @@ export class OrderService {
     newOrder.email = createOrderDto.email;
     newOrder.phone = createOrderDto.phone;
     newOrder.comment = createOrderDto.comment;
-    newOrder.total_price = createOrderDto.total_count;
+    newOrder.total_price = createOrderDto.total_price;
     newOrder.payment_status = createOrderDto.payment_status;
     newOrder.number = await this.generateNumber();
 
@@ -139,7 +139,7 @@ export class OrderService {
     orderToUpdate.email = updateOrderDto.email ?? orderToUpdate.email;
     orderToUpdate.phone = updateOrderDto.phone ?? orderToUpdate.phone;
     orderToUpdate.comment = updateOrderDto.comment ?? orderToUpdate.comment;
-    orderToUpdate.total_price = updateOrderDto.total_count;
+    orderToUpdate.total_price = updateOrderDto.total_price;
     orderToUpdate.status = updateOrderDto.status ?? orderToUpdate.status;
     orderToUpdate.warehouse = updatedWarehouse ?? orderToUpdate.warehouse;
     orderToUpdate.staff = updatedStaff ?? orderToUpdate.staff;
