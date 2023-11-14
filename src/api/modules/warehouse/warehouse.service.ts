@@ -65,21 +65,78 @@ export class WarehouseService {
   }
 
   async findOneById(id: number) {
-    const warehouse = await this.crudService.readOne({
+    return await this.crudService.readOne({
       name: 'id',
       value: id,
     });
+  }
 
-    warehouse.products = await this.warehouseProductsRepository.find({
-      where: {
-        warehouse: {
-          id: warehouse.id,
+  async getProductsByWarehouseId(
+    warehouseId: number,
+    page: number = 1,
+    pageSize: number = 10,
+  ) {
+    const options: PaginationsParams = {
+      page,
+      limit: pageSize,
+    };
+
+    const [data, totalCount] =
+      await this.warehouseProductsRepository.findAndCount({
+        where: {
+          warehouse: {
+            id: warehouseId,
+          },
+        },
+        relations: ['product'],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        order: this.constructOrderBy(options),
+      });
+
+    return this.formatPageableResponse(data, totalCount, options);
+  }
+
+  private constructOrderBy(options: PaginationsParams): {
+    [key: string]: 'ASC' | 'DESC';
+  } {
+    const { sortBy, orderBy } = options;
+    const order: { [key: string]: 'ASC' | 'DESC' } = {};
+
+    if (sortBy?.length && orderBy?.length) {
+      sortBy.forEach((field, index) => {
+        order[field] = orderBy[index].toUpperCase() as 'ASC' | 'DESC';
+      });
+    }
+
+    return order;
+  }
+
+  private formatPageableResponse(
+    data: any[],
+    totalCount: number,
+    options: PaginationsParams,
+  ) {
+    const { page, limit } = options;
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      content: data,
+      meta: {
+        totalItemsCount: totalCount,
+        pagination: {
+          itemsCountOnPage: data.length,
+          itemsPerPage: limit,
+          totalPages,
+          page,
+          links: {
+            previous: page > 1 ? page - 1 : null,
+            next: page < totalPages ? page + 1 : null,
+          },
         },
       },
-      relations: ['product'],
-    });
-
-    return warehouse;
+    };
   }
 
   private async updateWarehouseProducts(

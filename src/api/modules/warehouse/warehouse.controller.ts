@@ -68,6 +68,11 @@ export class WarehouseController {
     return this.warehouseService.findOneById(+id);
   }
 
+  @Get(':id/products')
+  getWarehouseProducts(@Param('id') id: string) {
+    return this.warehouseService.getProductsByWarehouseId(+id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
