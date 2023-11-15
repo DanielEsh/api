@@ -13,6 +13,7 @@ import { Warehouse } from '../warehouse/entities/warehouse.entity';
 import { Staff } from '../staff/entity/staff.entity';
 import { Product } from '../products/entities/product.entity';
 import { OrderProducts } from './entity/order-products.entity';
+import { OrderDto } from './dto/order.dto';
 
 @Injectable()
 export class OrderService {
@@ -90,7 +91,7 @@ export class OrderService {
     return await this.crudService.readAll(options);
   }
 
-  async findOneById(id: number) {
+  async findOne(id: number) {
     const order = await this.crudService.readOne(
       {
         name: 'id',
@@ -120,8 +121,27 @@ export class OrderService {
     return order;
   }
 
+  async findOneById(id: number): Promise<OrderDto> {
+    const order = await this.findOne(id);
+
+    return {
+      id: order.id,
+      number: order.number,
+      payment_status: order.payment_status,
+      status: order.status,
+      warehouse: order.warehouse,
+      staff: order.staff,
+      user_details: {
+        name: order.name,
+        phone: order.phone,
+        email: order.email,
+        comment: order.comment,
+      },
+    };
+  }
+
   async update(id: number, updateOrderDto: UpdateOrderDto) {
-    const orderToUpdate = await this.findOneById(id);
+    const orderToUpdate = await this.findOne(id);
 
     const updatedWarehouse = await this.warehouseRepository.findOne({
       where: {
