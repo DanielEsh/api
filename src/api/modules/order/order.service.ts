@@ -137,6 +137,15 @@ export class OrderService {
         email: order.email,
         comment: order.comment,
       },
+      delivery_details: {
+        country: order.country,
+        city: order.city,
+        street: order.street,
+        house: order.house,
+        building: order.building,
+        apartment_office: order.apartment_office,
+        zip_code: order.zip_code,
+      },
     };
   }
 

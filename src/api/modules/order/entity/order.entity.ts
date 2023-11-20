@@ -44,6 +44,27 @@ export class Order {
   @Column({ type: 'bigint' })
   public total_price: number;
 
+  @Column({ type: 'varchar', nullable: true })
+  public country: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  public city: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  public street: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  public house: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  public building: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  public apartment_office: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  public zip_code: string;
+
   @ManyToOne(() => Warehouse, { nullable: true })
   warehouse: Warehouse;
 
