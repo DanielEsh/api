@@ -40,17 +40,19 @@ export class OrderService {
   async create(createOrderDto: CreateOrderDto) {
     const newOrder = new Order();
 
-    newOrder.name = createOrderDto.name;
-    newOrder.email = createOrderDto.email;
-    newOrder.phone = createOrderDto.phone;
-    newOrder.comment = createOrderDto.comment;
-    newOrder.total_price = createOrderDto.total_price;
-    newOrder.payment_status = createOrderDto.payment_status;
+    newOrder.firstName = createOrderDto.user_details.firstName;
+    newOrder.lastName = createOrderDto.user_details.lastName;
+    newOrder.middleName = createOrderDto.user_details.middleName;
+    newOrder.email = createOrderDto.user_details.email;
+    newOrder.phone = 79991002030;
+    newOrder.comment = createOrderDto.user_details.comment;
+    newOrder.total_price = 0;
+    // newOrder.payment_status = createOrderDto.payment_status;
     newOrder.number = await this.generateNumber();
 
     const savedOrder = await this.orderRepository.save(newOrder);
 
-    if (createOrderDto.products.length) {
+    if (createOrderDto?.products?.length) {
       for (const productData of createOrderDto.products) {
         const product = await this.productRepository.findOne({
           where: {
@@ -132,7 +134,9 @@ export class OrderService {
       warehouse: order.warehouse,
       staff: order.staff,
       user_details: {
-        name: order.name,
+        firstName: order.firstName,
+        lastName: order.lastName,
+        middleName: order.middleName,
         phone: order.phone,
         email: order.email,
         comment: order.comment,
@@ -164,7 +168,11 @@ export class OrderService {
       },
     });
 
-    orderToUpdate.name = updateOrderDto.name ?? orderToUpdate.name;
+    orderToUpdate.firstName =
+      updateOrderDto.firstName ?? orderToUpdate.firstName;
+    orderToUpdate.lastName = updateOrderDto.lastName ?? orderToUpdate.lastName;
+    orderToUpdate.middleName =
+      updateOrderDto.middleName ?? orderToUpdate.middleName;
     orderToUpdate.email = updateOrderDto.email ?? orderToUpdate.email;
     orderToUpdate.phone = updateOrderDto.phone ?? orderToUpdate.phone;
     orderToUpdate.comment = updateOrderDto.comment ?? orderToUpdate.comment;

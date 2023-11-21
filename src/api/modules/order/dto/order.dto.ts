@@ -4,13 +4,15 @@ import { Warehouse } from '../../warehouse/entities/warehouse.entity';
 import { Staff } from '../../staff/entity/staff.entity';
 
 interface UserDetails {
-  name: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
   email: string;
   phone: number;
   comment: string;
 }
 
-interface DelivaryDetails {
+interface DeliveryDetails {
   country: string;
   city: string;
   street: string;
@@ -26,7 +28,7 @@ export interface OrderDto {
   payment_status: OrderPaymentStatus;
   status: OrderStatus;
   user_details: UserDetails;
-  delivery_details: DelivaryDetails;
+  delivery_details: DeliveryDetails;
   warehouse: Warehouse;
   staff: Staff;
 }

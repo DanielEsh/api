@@ -30,7 +30,13 @@ export class Order {
   status: OrderStatus;
 
   @Column({ type: 'varchar' })
-  public name: string;
+  public firstName: string;
+
+  @Column({ type: 'varchar' })
+  public lastName: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  public middleName: string;
 
   @Column({ type: 'varchar' })
   public email: string;
