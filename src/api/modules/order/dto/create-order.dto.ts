@@ -33,7 +33,5 @@ export class CreateOrderDto {
   status: OrderStatus;
   user_details: UserDetails;
   delivery_details: DeliveryDetails;
-  warehouse: Warehouse;
-  staff: Staff;
   products: CreatedOrderProducts[];
 }

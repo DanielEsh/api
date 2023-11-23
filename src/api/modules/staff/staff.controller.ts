@@ -69,7 +69,7 @@ export class StaffController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.staffService.update(+id, updateOrderDto);
+  update(@Param('id') id: string) {
+    return this.staffService.update(+id, {});
   }
 }

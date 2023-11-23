@@ -100,25 +100,25 @@ export class OrderService {
         value: id,
       },
       [
-        {
-          entity: 'warehouse',
-          fields: ['id'],
-        },
-        {
-          entity: 'staff',
-          fields: ['id'],
-        },
+        // {
+        //   entity: 'warehouse',
+        //   fields: ['id'],
+        // },
+        // {
+        //   entity: 'staff',
+        //   fields: ['id'],
+        // },
       ],
     );
 
-    order.products = await this.orderProductsRepository.find({
-      where: {
-        order: {
-          id: order.id,
-        },
-      },
-      relations: ['product'],
-    });
+    // order.products = await this.orderProductsRepository.find({
+    //   where: {
+    //     order: {
+    //       id: order.id,
+    //     },
+    //   },
+    //   relations: ['product'],
+    // });
 
     return order;
   }
@@ -155,31 +155,34 @@ export class OrderService {
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
     const orderToUpdate = await this.findOne(id);
+    console.log('orderToUpdate', orderToUpdate);
 
-    const updatedWarehouse = await this.warehouseRepository.findOne({
-      where: {
-        id: updateOrderDto.warehouse,
-      },
-    });
-
-    const updatedStaff = await this.staffRepository.findOne({
-      where: {
-        id: updateOrderDto.staff,
-      },
-    });
+    // const updatedWarehouse = await this.warehouseRepository.findOne({
+    //   where: {
+    //     id: updateOrderDto.warehouse,
+    //   },
+    // });
+    //
+    // const updatedStaff = await this.staffRepository.findOne({
+    //   where: {
+    //     id: updateOrderDto.staff,
+    //   },
+    // });
 
     orderToUpdate.firstName =
-      updateOrderDto.firstName ?? orderToUpdate.firstName;
-    orderToUpdate.lastName = updateOrderDto.lastName ?? orderToUpdate.lastName;
+      updateOrderDto.user_details.firstName ?? orderToUpdate.firstName;
+    orderToUpdate.lastName =
+      updateOrderDto.user_details.lastName ?? orderToUpdate.lastName;
     orderToUpdate.middleName =
-      updateOrderDto.middleName ?? orderToUpdate.middleName;
-    orderToUpdate.email = updateOrderDto.email ?? orderToUpdate.email;
-    orderToUpdate.phone = updateOrderDto.phone ?? orderToUpdate.phone;
-    orderToUpdate.comment = updateOrderDto.comment ?? orderToUpdate.comment;
-    orderToUpdate.total_price = updateOrderDto.total_price;
+      updateOrderDto.user_details.middleName ?? orderToUpdate.middleName;
+    orderToUpdate.email =
+      updateOrderDto.user_details.email ?? orderToUpdate.email;
+    orderToUpdate.phone =
+      updateOrderDto.user_details.phone ?? orderToUpdate.phone;
+    orderToUpdate.comment =
+      updateOrderDto.user_details.comment ?? orderToUpdate.comment;
+    orderToUpdate.total_price = 0;
     orderToUpdate.status = updateOrderDto.status ?? orderToUpdate.status;
-    orderToUpdate.warehouse = updatedWarehouse ?? orderToUpdate.warehouse;
-    orderToUpdate.staff = updatedStaff ?? orderToUpdate.staff;
 
     return await this.orderRepository.save(orderToUpdate);
   }
