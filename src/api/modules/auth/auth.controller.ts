@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { AccessJwtAuthGuard, RefreshJwtAuthGuard } from './guards';
-import { getCurrentUser } from '../user/decorator/get-current-user.decorator';
+import { getCurrentUser } from '../staff/decorator/get-current-user.decorator';
 
 @Controller('auth')
 export class AuthController {

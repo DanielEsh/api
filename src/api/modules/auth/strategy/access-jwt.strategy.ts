@@ -23,7 +23,7 @@ export class AccessJwtStrategy extends PassportStrategy(
   async validate(payload) {
     return {
       id: payload.id,
-      name: payload.name,
+      nickname: payload.nickname,
       email: payload.email,
     };
   }

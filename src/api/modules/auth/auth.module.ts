@@ -10,14 +10,14 @@ import {
   RefreshJwtStrategy,
   LocalStrategy,
 } from './strategy';
-import { UserModule } from '../user/user.module';
-import { User } from '../user/entity/user.entity';
+import { StaffModule } from '../staff/staff.module';
+import { Staff } from '../staff/entity/staff.entity';
 
 @Module({
   imports: [
-    UserModule,
+    StaffModule,
     PassportModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Staff]),
     JwtModule.register({}),
   ],
   providers: [

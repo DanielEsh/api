@@ -10,11 +10,12 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../../user/entity/user.entity';
 import { ConfigService } from '@nestjs/config';
+import { Staff } from '../../staff/entity/staff.entity';
 
 @Injectable()
 export class AuthHelper {
-  @InjectRepository(User)
-  private readonly userRepository: Repository<User>;
+  @InjectRepository(Staff)
+  private readonly staffRepository: Repository<Staff>;
   private readonly jwt: JwtService;
   private readonly config: ConfigService;
 
@@ -29,17 +30,17 @@ export class AuthHelper {
   }
 
   // Get User by User ID we get from decode()
-  public async validateUser(decoded: any): Promise<User> {
-    return this.userRepository.findOne(decoded.id);
+  public async validateUser(decoded: any): Promise<Staff> {
+    return this.staffRepository.findOne(decoded.id);
   }
 
   // Generate Access JWT Token
-  public generateAccessToken(user: User): string {
+  public generateAccessToken(user: Staff): string {
     return this.jwt.sign(
       {
         id: user.id,
         email: user.email,
-        name: user.name,
+        nickname: user.nickname,
       },
       {
         secret: this.config.get('JWT_ACCESS_KEY'),
@@ -48,12 +49,12 @@ export class AuthHelper {
     );
   }
 
-  public generateRefreshToken(user: User): string {
+  public generateRefreshToken(user: Staff): string {
     return this.jwt.sign(
       {
         id: user.id,
         email: user.email,
-        name: user.name,
+        nickname: user.nickname,
       },
       {
         secret: this.config.get('JWT_REFRESH_KEY'),
@@ -75,14 +76,14 @@ export class AuthHelper {
   }
 
   // Validate JWT Token, throw forbidden error if JWT Token is invalid
-  private async validate(token: string): Promise<User | never> {
+  private async validate(token: string): Promise<Staff | never> {
     const decoded: unknown = this.jwt.verify(token);
 
     if (!decoded) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
 
-    const user: User = await this.validateUser(decoded);
+    const user: Staff = await this.validateUser(decoded);
 
     if (!user) {
       throw new UnauthorizedException();

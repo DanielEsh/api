@@ -6,6 +6,9 @@ export class Staff {
   @PrimaryGeneratedColumn()
   public id: number;
 
+  @Column({ type: 'varchar', unique: true })
+  public nickname: string;
+
   @Column({ type: 'varchar' })
   public first_name: string;
 
@@ -18,8 +21,17 @@ export class Staff {
   @Column({ type: 'bigint', nullable: true })
   public phone: number;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', unique: true })
   public email: string;
+
+  @Column({ type: 'varchar' })
+  public password: string;
+
+  @Column({ type: 'timestamp', nullable: true, default: null })
+  public lastLoginAt: Date | null;
+
+  @Column({ type: 'varchar', nullable: true, default: null })
+  public hashedRefreshToken: string | null;
 
   @OneToMany(() => Order, (order) => order.staff)
   public orders: Order[];

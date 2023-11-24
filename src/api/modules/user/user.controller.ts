@@ -80,13 +80,6 @@ export class UserController {
     return await this.userService.delete(id);
   }
 
-  @UseGuards(AccessJwtAuthGuard)
-  @Get('me')
-  async getUserMe(@Request() req) {
-    const { user } = req;
-    return await this.userService.findById(user.id);
-  }
-
   @Get('/guest')
   guest() {
     return 'Guest route';

@@ -5,22 +5,22 @@ import {
   HttpStatus,
   ForbiddenException,
 } from '@nestjs/common';
-import { UserService } from '../user/user.service';
 import { AuthHelper } from './helpers/auth.helpers';
-import { User } from '../user/entity/user.entity';
 import { Response } from 'express';
 import { cookieOptions } from '../../../utils/cookie';
 import * as bcrypt from 'bcryptjs';
+import { StaffService } from '../staff/staff.service';
+import { Staff } from '../staff/entity/staff.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UserService) {}
+  constructor(private staffService: StaffService) {}
 
   @Inject(AuthHelper)
   private readonly authHelper: AuthHelper;
 
   async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findUserByEmailOrName(username);
+    const user = await this.staffService.findStaffByEmailOrNickName(username);
 
     if (!user) {
       throw new HttpException('No user found', HttpStatus.NOT_FOUND);
@@ -35,15 +35,17 @@ export class AuthService {
       throw new HttpException('password is not valid', HttpStatus.NOT_FOUND);
     }
 
+    // TODO: используется что бы удалять поля из выдачи
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, lastLoginAt, ...result } = user;
 
     return result;
   }
 
-  async signIn(user: User, res: Response) {
+  async signIn(user: Staff, res: Response) {
     const accessToken = this.authHelper.generateAccessToken(user);
     const refreshToken = this.authHelper.generateRefreshToken(user);
-    await this.usersService.updateRefreshTokenHash(user.id, refreshToken);
+    await this.staffService.updateRefreshTokenHash(user.id, refreshToken);
     res.cookie('accessToken', accessToken, cookieOptions);
     res.cookie('refreshToken', refreshToken, cookieOptions);
 
@@ -54,7 +56,7 @@ export class AuthService {
   }
 
   public async refresh(userId: number, refreshToken: string, res: Response) {
-    const user = await this.usersService.findById(userId);
+    const user = await this.staffService.findOneById(userId);
 
     if (!user) throw new ForbiddenException('Access denied');
 
@@ -65,7 +67,7 @@ export class AuthService {
 
     if (!matchTokens) throw new ForbiddenException('Access denied');
 
-    const accessToken = await this.authHelper.generateAccessToken(user);
+    const accessToken = this.authHelper.generateAccessToken(user);
     res.cookie('accessToken', accessToken, cookieOptions);
 
     return {
@@ -77,7 +79,7 @@ export class AuthService {
     response.clearCookie('accessToken');
     response.clearCookie('refreshToken');
 
-    await this.usersService.updateUserById(userId, {
+    await this.staffService.update(userId, {
       hashedRefreshToken: null,
     });
   }

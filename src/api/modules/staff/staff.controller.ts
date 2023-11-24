@@ -11,10 +11,14 @@ import {
   Patch,
   Post,
   Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { StaffService } from './staff.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateOrderDto } from '../order/dto/update-order.dto';
+import { UpdateStaffDto } from './dto/update-staff.dto';
+import { AccessJwtAuthGuard } from '../auth/guards';
 
 const DEFAULT_VALUES = {
   limit: 10,
@@ -63,13 +67,21 @@ export class StaffController {
     });
   }
 
+  @UseGuards(AccessJwtAuthGuard)
+  @Get('/me')
+  async getUserMe(@Request() req) {
+    const { user } = req;
+    console.log('user', user);
+    return await this.staffService.findOneById(user.id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.staffService.findOneById(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string) {
-    return this.staffService.update(+id, {});
+  update(@Param('id') id: string, @Body() body: UpdateStaffDto) {
+    return this.staffService.update(+id, body);
   }
 }
