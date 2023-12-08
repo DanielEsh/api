@@ -75,11 +75,16 @@ export class StaffService {
   async update(id: number, updateStaffDto: UpdateStaffDto) {
     const staffToUpdate = await this.findOneById(id);
 
-    staffToUpdate.first_name = updateStaffDto.first_name;
-    staffToUpdate.last_name = updateStaffDto.last_name;
-    staffToUpdate.middle_name = updateStaffDto.middle_name;
-    staffToUpdate.email = updateStaffDto.email;
-    staffToUpdate.phone = updateStaffDto.phone;
+    staffToUpdate.first_name =
+      updateStaffDto?.first_name || staffToUpdate.first_name;
+    staffToUpdate.last_name =
+      updateStaffDto?.last_name || staffToUpdate.last_name;
+    staffToUpdate.middle_name =
+      updateStaffDto?.middle_name || staffToUpdate.middle_name;
+    staffToUpdate.email = updateStaffDto?.email || staffToUpdate.email;
+    staffToUpdate.phone = updateStaffDto?.phone || staffToUpdate.phone;
+    staffToUpdate.hashedRefreshToken =
+      updateStaffDto?.hashedRefreshToken || staffToUpdate.hashedRefreshToken;
 
     return await this.staffRepository.save(staffToUpdate);
   }

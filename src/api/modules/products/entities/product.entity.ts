@@ -27,7 +27,7 @@ export class Product extends BaseEntity {
   @Column({ type: 'int' })
   public price: number;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: true, default: null })
   public description?: string;
 
   @ManyToOne(() => Category, (category) => category.products)

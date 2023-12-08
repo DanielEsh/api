@@ -21,6 +21,7 @@ export class AuthController {
     @getCurrentUser() user,
     @Res({ passthrough: true }) res: Response,
   ) {
+    console.log('user', user);
     return this.authService.refresh(user.id, user.refreshToken, res);
   }
 

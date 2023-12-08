@@ -149,7 +149,8 @@ export class ProductsService {
     productToUpdate.price = updateProductDto.price;
     productToUpdate.brand = updatedBrand;
     productToUpdate.category = updatedCategory;
-    productToUpdate.description = updateProductDto?.description;
+    productToUpdate.description =
+      updateProductDto?.description || productToUpdate.description;
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
