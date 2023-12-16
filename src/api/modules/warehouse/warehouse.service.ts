@@ -212,6 +212,16 @@ export class WarehouseService {
     return updateWarehouse;
   }
 
+  async removeWarehouseProduct(warehouseProductId: number) {
+    const warehouseProduct = await this.warehouseProductsRepository.findOne({
+      where: {
+        id: warehouseProductId,
+      },
+    });
+
+    return await this.warehouseProductsRepository.remove(warehouseProduct);
+  }
+
   async remove(id: number) {
     return await this.crudService.delete({
       name: 'id',

@@ -92,6 +92,11 @@ export class WarehouseController {
     return this.warehouseService.update(+id, updateWarehouseDto);
   }
 
+  @Delete(':id/products/:id')
+  removeWarehouseProduct(@Param('id') warehouseProductId: string) {
+    return this.warehouseService.removeWarehouseProduct(+warehouseProductId);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.warehouseService.remove(+id);
