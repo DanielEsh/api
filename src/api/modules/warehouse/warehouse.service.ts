@@ -71,6 +71,34 @@ export class WarehouseService {
     });
   }
 
+  async createWarehouseProduct(warehouseId: number, createdDto: any) {
+    const warehouse = await this.warehouseRepository.findOne({
+      where: {
+        id: warehouseId,
+      },
+    });
+
+    const product = await this.productService.findOne(createdDto.productId);
+
+    const newWarehouseProduct = new WarehouseProducts();
+
+    newWarehouseProduct.quantity = createdDto.quantity;
+    newWarehouseProduct.warehouse = warehouse;
+    newWarehouseProduct.product = product;
+
+    const warehouseProduct =
+      this.warehouseProductsRepository.save(newWarehouseProduct);
+
+    console.log('WAREHOUSE', warehouseProduct);
+    //
+    // const updatedWarehouse = {
+    //   ...warehouse,
+    //   products: [...warehouse.products, warehouseProduct],
+    // };
+    //
+    return warehouseProduct;
+  }
+
   async getProductsByWarehouseId(
     warehouseId: number,
     page: number = 1,

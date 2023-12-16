@@ -68,9 +68,20 @@ export class WarehouseController {
     return this.warehouseService.findOneById(+id);
   }
 
+  @Post(':id/products')
+  createWarehouseProducts(@Param('id') id: string, @Body() createdDto: any) {
+    return this.warehouseService.createWarehouseProduct(+id, createdDto);
+  }
+
   @Get(':id/products')
-  getWarehouseProducts(@Param('id') id: string) {
-    return this.warehouseService.getProductsByWarehouseId(+id);
+  getWarehouseProducts(
+    @Param('id') id: string,
+    @Query('page', new DefaultValuePipe(DEFAULT_VALUES.page), ParseIntPipe)
+    page,
+    @Query('limit', new DefaultValuePipe(DEFAULT_VALUES.limit), ParseIntPipe)
+    limit,
+  ) {
+    return this.warehouseService.getProductsByWarehouseId(+id, page, limit);
   }
 
   @Patch(':id')
