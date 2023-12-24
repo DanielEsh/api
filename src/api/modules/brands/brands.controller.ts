@@ -86,31 +86,31 @@ export class BrandsController {
     });
   }
 
-  @ApiOperation({ summary: 'Read brand by slug param' })
+  @ApiOperation({ summary: 'Read brand by id param' })
   @ApiParam({
-    name: 'slug',
-    type: String,
-    example: 'example-slug',
+    name: 'id',
+    type: Number,
+    example: 1,
     required: true,
   })
   @ApiOkResponse({ type: Brand })
-  @Get(':slug')
-  findOne(@Param('slug') slug: string) {
-    return this.brandsService.findOneBySlug(slug);
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.brandsService.findOneById(id);
   }
 
   @ApiOperation({ summary: 'Update brand by slug param' })
   @ApiParam({
-    name: 'slug',
-    type: String,
-    example: 'example-slug',
+    name: 'id',
+    type: Number,
+    example: 1,
     required: true,
   })
   @ApiBody({ type: UpdateBrandDto })
   @ApiOkResponse({ type: Brand })
-  @Patch(':slug')
-  update(@Param('slug') slug: string, @Body() updateBrandDto: UpdateBrandDto) {
-    return this.brandsService.update(slug, updateBrandDto);
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() updateBrandDto: UpdateBrandDto) {
+    return this.brandsService.update(id, updateBrandDto);
   }
 
   @ApiOperation({ summary: 'Delete brand by id' })

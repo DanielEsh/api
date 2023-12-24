@@ -35,13 +35,6 @@ export class BrandsService {
     return await this.crudService.readAll(options);
   }
 
-  async findOneBySlug(slug: string) {
-    return await this.crudService.readOne({
-      name: 'slug',
-      value: slug,
-    });
-  }
-
   async findOneById(id: number) {
     return await this.crudService.readOne({
       name: 'id',
@@ -49,11 +42,16 @@ export class BrandsService {
     });
   }
 
-  async update(slug: string, updateBrandDto: UpdateBrandDto) {
-    return await this.crudService.update(
-      { name: 'slug', value: slug },
-      updateBrandDto,
-    );
+  async update(id: number, updateBrandDto: UpdateBrandDto) {
+    const brand = await this.brandRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    Object.assign(brand, updateBrandDto);
+
+    return await this.brandRepository.save(brand);
   }
 
   async remove(id: number) {

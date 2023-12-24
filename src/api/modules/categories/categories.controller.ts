@@ -57,8 +57,8 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Read categories' })
   @ApiQuery({ name: 'page', type: Number, example: 1, required: true })
   @ApiQuery({ name: 'limit', type: Number, example: 10, required: true })
-  @ApiQuery({ name: 'sort_by', type: String, example: null, required: false })
-  @ApiQuery({ name: 'order_by', type: String, example: null, required: false })
+  @ApiQuery({ name: 'sortBy', type: String, example: null, required: false })
+  @ApiQuery({ name: 'orderBy', type: String, example: null, required: false })
   @Get()
   findAll(
     @Query('page', new DefaultValuePipe(DEFAULT_VALUES.page), ParseIntPipe)
@@ -66,13 +66,13 @@ export class CategoriesController {
     @Query('limit', new DefaultValuePipe(DEFAULT_VALUES.limit), ParseIntPipe)
     limit,
     @Query(
-      'sort_by',
+      'sortBy',
       new DefaultValuePipe(DEFAULT_VALUES.sort_by),
       ParseArrayPipe,
     )
     sortBy,
     @Query(
-      'order_by',
+      'orderBy',
       new DefaultValuePipe(DEFAULT_VALUES.order_by),
       ParseArrayPipe,
     )
