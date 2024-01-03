@@ -84,6 +84,18 @@ export class WarehouseController {
     return this.warehouseService.getProductsByWarehouseId(+id, page, limit);
   }
 
+  @Patch('/products/:id')
+  updateWarehouseProducts(
+    @Param('id') id: string,
+    @Body() updateWarehouseProductDto: any,
+  ) {
+    console.log('updated', id);
+    return this.warehouseService.updateWarehouseProduct(
+      +id,
+      updateWarehouseProductDto,
+    );
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

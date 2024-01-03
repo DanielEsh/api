@@ -99,6 +99,25 @@ export class WarehouseService {
     return warehouseProduct;
   }
 
+  async updateWarehouseProduct(id: number, updatedDto: any) {
+    const warehouseProduct = await this.warehouseProductsRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (updatedDto.productId) {
+      warehouseProduct.product = await this.productService.findOne(
+        updatedDto.productId,
+      );
+    }
+
+    warehouseProduct.quantity =
+      updatedDto.quantity || warehouseProduct.quantity;
+
+    return await this.warehouseProductsRepository.save(warehouseProduct);
+  }
+
   async getProductsByWarehouseId(
     warehouseId: number,
     page: number = 1,
